@@ -5,29 +5,30 @@ This tutorial shows the fundamentals of AngularJS and how to write an event-base
 This tutorial is really a mach-up between these 2 talks:
 
 AngularJS Fundamentals In 60-ish Minutes : http://www.youtube.com/watch?v=i9MHigUZKEM
+
 Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.com/watch?v=xi4PNVk0RIc
 
 # Installation
 
-	**IDE**
-	* Webstorm
+**IDE**
+* Webstorm
 
-	**UI**
-	* AngularJS
-	* Bootstrap
-	* Darkstrap
-	* SocketIO
-	* BreezeJS
+**UI**
+* AngularJS
+* Bootstrap
+* Darkstrap
+* SocketIO
+* BreezeJS
 
-	**TESTING**
-	* NodeJS
-	* JasminJS
-	* Karma
+**TESTING**
+* NodeJS
+* JasminJS
+* Karma
 
-	**BACKEND**
-	* Python
-	* LibEvent
-	* MongoDB
+**BACKEND**
+* Python
+* LibEvent
+* MongoDB
 
 
 # Tutorial
@@ -63,27 +64,27 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 
 	This would be a high-level ASCII-art overview:
 
-			----------
-			| Module |
-			----------
-			    ||
-			----------
-			| Config |
-			----------
-                ||
-            ----------
-			| Routes |
-			----------
-	       //        \\
-	 --------        --------------
-     | View |-$scope-| Controller |
-     --------        --------------
-                              ||
-                        --------------
-                        |  Factories  |
-                        |  Services   |
-                        |  Providers  |
-                        ---------------
+				----------
+				| Module |
+				----------
+					||
+				----------
+				| Config |
+				----------
+					||
+				----------
+				| Routes |
+				----------
+			   //        \\
+		 --------        --------------
+		 | View |-$scope-| Controller |
+		 --------        --------------
+								  ||
+							--------------
+							|  Factories  |
+							|  Services   |
+							|  Providers  |
+							---------------
 
 
 * What are these "data-" (or less standard "ng-") attributes for?
