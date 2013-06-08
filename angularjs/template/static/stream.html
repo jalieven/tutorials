@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/darkstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" type="text/css" href="css/tweaks.css">
 </head>
 <body>
@@ -28,12 +29,48 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="stream.html">ACD EventStream</a>
-
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="stream.html">Stream</a></li>
-                    <li><a data-toggle="modal" href="#createEvent">Create event</a></li>
-                    <li><a href="search.html">Search</a></li>
+                    <li><a href="stream.html">Live Stream</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">Filter <strong class="caret"></strong></a>
+                        <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+                            <form>
+                                <div class="control-group">
+                                    <label class="control-label" for="filter-tags">Tags</label>
+                                    <div class="controls">
+                                        <select id="filter-tags" multiple="multiple" class="input-large" size="18">
+                                            <option value="ABSENCE">Absence</option>
+                                            <option value="BAMBOO">Bamboo</option>
+                                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                                            <option value="COMPLIANCE">Compliance</option>
+                                            <option value="COMPLAINT">Complaint</option>
+                                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                                            <option value="HACK">Hack</option>
+                                            <option value="HELP-REQUEST">Help Request</option>
+                                            <option value="MAINTENANCE">Maintenance</option>
+                                            <option value="NEXUS">Nexus</option>
+                                            <option value="PRAISE">Praise</option>
+                                            <option value="QUIBBLE">Quibble</option>
+                                            <option value="QUIP">Quip</option>
+                                            <option value="REDEPLOYMENT">Redeployment</option>
+                                            <option value="SERVER-RESTART">Server Restart</option>
+                                            <option value="SONAR">Sonar</option>
+                                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                                            <option value="TODO">Todo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                    <li><a data-toggle="modal" href="#createEvent">Create</a></li>
+                    <li><a data-toggle="modal" href="#searchEvent">Search</a></li>
                 </ul>
             </div>
         </div>
@@ -44,11 +81,11 @@
 <div class="container">
 
     <div>
-        <h2>Here comes the event stream...</h2>
+        <h2>Live Stream</h2>
 
         <div class="well grave">
             <p>
-                <span class="badge">5 May 2013 - 12:55:41</span>
+                <span class="badge">08/05/2013 8:15:16</span>
             </p>
 
             <div class="container-fluid">
@@ -79,14 +116,16 @@
                         </p>
                     </div>
                     <div class="span2">
-                        <span class="label"><a href="#">Comments: 3</a></span>
+                        <p>
+                            <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small">Comments: 3</a>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="well shameful">
             <p>
-                <span class="badge">5 May 2013 - 12:45:41</span>
+                <span class="badge">08/06/2013 18:10:16</span>
             </p>
 
             <div class="container-fluid">
@@ -115,6 +154,11 @@
                             <span class="label label-warning">TODO</span>
                         </p>
                     </div>
+                    <div class="span2">
+                        <p>
+                            <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small">Comments: 1</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -129,10 +173,21 @@
         <div class="modal-body">
             <form class="form-horizontal well">
                 <div class="control-group">
-                    <label class="control-label" for="instigators">Instigators</label>
-
+                    <label class="control-label" for="create-occurance-datetimepicker">Occurance</label>
                     <div class="controls">
-                        <select id="instigators" multiple="multiple"
+                        <div id="create-occurance-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                            <span class="add-on">
+                              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                              </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-instigators">Instigators</label>
+                    <div class="controls">
+                        <select id="create-instigators" multiple="multiple"
                                 class="input-large" size="2">
                             <option value="jalie">jalie</option>
                             <option value="tiroo">tiroo</option>
@@ -141,10 +196,9 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="judgement">Judgement</label>
-
+                    <label class="control-label" for="create-judgement">Judgement</label>
                     <div class="controls">
-                        <select id="judgement" size="2" class="input-large">
+                        <select id="create-judgement" size="2" class="input-large">
                             <option value="ALARMING">Alarming</option>
                             <option value="DETERIORATING">Deteriorating</option>
                             <option value="FAIL">Fail</option>
@@ -160,12 +214,11 @@
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="tags">Tags</label>
-
+                    <label class="control-label" for="create-tags">Tags</label>
                     <div class="controls">
-                        <select id="tags" multiple="multiple" class="input-large"
-                                size="2">
+                        <select id="create-tags" multiple="multiple" class="input-large" size="2">
                             <option value="ABSENCE">Absence</option>
+                            <option value="BAMBOO">Bamboo</option>
                             <option value="COMMIT-AND-RUN">Commit And Run</option>
                             <option value="COMPLIANCE">Compliance</option>
                             <option value="COMPLAINT">Complaint</option>
@@ -173,33 +226,35 @@
                             <option value="HACK">Hack</option>
                             <option value="HELP-REQUEST">Help Request</option>
                             <option value="MAINTENANCE">Maintenance</option>
+                            <option value="NEXUS">Nexus</option>
                             <option value="PRAISE">Praise</option>
                             <option value="QUIBBLE">Quibble</option>
                             <option value="QUIP">Quip</option>
                             <option value="REDEPLOYMENT">Redeployment</option>
                             <option value="SERVER-RESTART">Server Restart</option>
+                            <option value="SONAR">Sonar</option>
                             <option value="TECHNICAL-QUESTION">Technical Question</option>
                             <option value="TODO">Todo</option>
                         </select>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="link">Link</label>
-
+                    <label class="control-label" for="create-link">Link</label>
                     <div class="controls">
-                        <input id="link" type="url" placeholder="URL" class="input-large">
+                        <input id="create-link" type="url" placeholder="URL" class="input-large">
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="message">Message</label>
-
+                    <label class="control-label" for="create-message">Message</label>
                     <div class="controls">
-                        <textarea id="message" class="input-large" placeholder="Message..."></textarea>
+                        <textarea id="create-message" class="input-large" placeholder="Message..."></textarea>
                     </div>
                 </div>
 
                 <div class="well">
-
+                    <p>
+                        <span class="badge">08/06/2013 18:10:16</span>
+                    </p>
                     <div class="container-fluid">
                         <div class="row-fluid">
                             <div class="span6">
@@ -229,11 +284,160 @@
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn btn-danger" data-dismiss="modal">Save event</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal">Create</a>
+        </div>
+    </div>
+
+    <!-- This is the modal "searching for events" form -->
+    <div id="searchEvent" class="modal hide fade" style="display: none; ">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3>Search for events</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal well">
+
+                <div class="control-group">
+                    <label class="control-label" for="search-from-datetimepicker">From</label>
+                    <div class="controls">
+                        <div id="search-from-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                            <span class="add-on">
+                              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                              </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="search-to-datetimepicker">To</label>
+                    <div class="controls">
+                        <div id="search-to-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                            <span class="add-on">
+                              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                              </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="search-instigators">Instigators</label>
+                    <div class="controls">
+                        <select id="search-instigators" multiple="multiple"
+                                class="input-large" size="2">
+                            <option value="jalie">jalie</option>
+                            <option value="tiroo">tiroo</option>
+                            <option value="gertdw">gertdw</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-judgement">Judgement</label>
+                    <div class="controls">
+                        <select id="search-judgement" size="2" class="input-large">
+                            <option value="ALARMING">Alarming</option>
+                            <option value="DETERIORATING">Deteriorating</option>
+                            <option value="FAIL">Fail</option>
+                            <option value="FUNNY">Funny</option>
+                            <option value="GRAVE">Grave</option>
+                            <option value="HEROLIKE">Herolike</option>
+                            <option value="IMPROVING">Improving</option>
+                            <option value="INDIFFERENT">Indifferent</option>
+                            <option value="INFORMATIVE">Informative</option>
+                            <option value="PALM_FACE">Palm/Face</option>
+                            <option value="SHAMEFUL">Shameful</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-tags">Tags</label>
+                    <div class="controls">
+                        <select id="search-tags" multiple="multiple" class="input-large"
+                                size="2">
+                            <option value="ABSENCE">Absence</option>
+                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                            <option value="COMPLIANCE">Compliance</option>
+                            <option value="COMPLAINT">Complaint</option>
+                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                            <option value="HACK">Hack</option>
+                            <option value="HELP-REQUEST">Help Request</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="PRAISE">Praise</option>
+                            <option value="QUIBBLE">Quibble</option>
+                            <option value="QUIP">Quip</option>
+                            <option value="REDEPLOYMENT">Redeployment</option>
+                            <option value="SERVER-RESTART">Server Restart</option>
+                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                            <option value="TODO">Todo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-message">Message</label>
+
+                    <div class="controls">
+                        <textarea id="search-message" class="input-large" placeholder="Message..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal">Search</a>
+        </div>
+    </div>
+
+    <!-- This is the modal "comment on an event" form -->
+    <div id="commentEvent" class="modal hide fade" style="display: none; ">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3>Comment on an event</h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="140px">08/06/2013 18:10:16</td>
+                        <td>jalie</td>
+                        <td>Nicely done. Would be cool with fries.</td>
+                    </tr>
+                    <tr>
+                        <td width="140px">08/06/2013 18:18:16</td>
+                        <td>jacob</td>
+                        <td>What about mayo?</td>
+                    </tr>
+                    <tr>
+                        <td width="140px">08/06/2013 18:18:16</td>
+                        <td>benh</td>
+                        <td>I want a "balleken"... and I want this comment to be very long so I will talk a bit more... Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="create-comment">Message</label>
+
+                    <div class="controls">
+                        <textarea id="create-comment" class="input-xlarge" placeholder="Comment..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal">Comment</a>
         </div>
     </div>
 
@@ -243,7 +447,30 @@
 <script src="js/vendor/jquery.min.js"></script>
 <script src="js/vendor/angular.min.js"></script>
 <script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/bootstrap-datetimepicker.min.js"></script>
 
+<script type="text/javascript">
+    $(function () {
+
+        $('#create-occurance-datetimepicker').datetimepicker({
+            language:'nl-BE'
+        });
+        $('#search-from-datetimepicker').datetimepicker({
+            language:'nl-BE'
+        });
+        $('#search-to-datetimepicker').datetimepicker({
+            language:'nl-BE'
+        });
+
+        // Setup drop down menu
+        $('.dropdown-toggle').dropdown();
+
+        // Fix input element click problem
+        $('.dropdown input, .dropdown select, .dropdown label').click(function(e) {
+            e.stopPropagation();
+        });
+    });
+</script>
 
 </body>
 </html>

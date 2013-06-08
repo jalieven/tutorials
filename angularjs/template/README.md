@@ -39,7 +39,7 @@ ___________________
 ### Steps from scratch:
 
 0. Take the most simple stream/index.html-page. Html-, Head-, Body-, metadata-tags,...
-1. Add Bootstrap (responsive)/Darkstrap and own tweaks css. Add jquery.min.js, angular.min.js and bootstrap.min.js to the page. (All the latest versions)
+1. Add Bootstrap (responsive)/Darkstrap and own tweaks css. Add jquery.min.js, angular.min.js and bootstrap.min.js (+datetime picker) to the page. (All the latest versions)
 2. Start coding in Bootstrap and come up with a cool static-mock-template-site that does absolutely nothing. All static pages...
 
 
@@ -105,7 +105,9 @@ ___________________
 
 ### From mock template to live application
 
-0. Init the application with the "ng-app"-directive and show the bi-directional data-binding and a simple ng-repeat.
-1. Create a Module and modularize the application with routes and everything
-2. Create an custom directive for the event-well.
+0. Init the application with the "ng-app"-directive and show the bi-directional data-binding and a simple "ng-repeat".
+1. Create a Module and modularize the application with routes and everything.
+2. Create an custom directive for the "event-well" which is used all over the place.
 3. Tie in the backend with a Service (and BreezeJS).
+4. I18n
+5. Test the create event use-case

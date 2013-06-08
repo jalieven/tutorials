@@ -1,17 +1,4 @@
 /**
- * Different event-wells
-**/
-/*.grave {*/
-    /*background-color: rgb(69, 9, 12);*/
-/*}*/
-/*.shameful {*/
-    /*background-color: rgb(58, 28, 5);*/
-/*}*/
-/*.herolike {*/
-    /*background-color: rgb(16, 35, 3);*/
-/*}*/
-
-/**
  * Stuff to resize the modal screen
 **/
 @media (min-width: 979px)  {
