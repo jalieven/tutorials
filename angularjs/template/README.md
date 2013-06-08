@@ -11,25 +11,26 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 # Installation
 
 **IDE**
-* Webstorm
+* [Webstorm](http://www.jetbrains.com/webstorm/)
 
 **UI**
-* AngularJS
-* Bootstrap
-* Darkstrap
-* SocketIO
-* BreezeJS
+* [AngularJS](http://angularjs.org/)
+* [Bootstrap](http://twitter.github.io/bootstrap/)
+* [Darkstrap](https://github.com/danneu/darkstrap)
+* [SocketIO](http://socket.io/)
+* [BreezeJS](http://www.breezejs.com/)
 
 **TESTING**
-* NodeJS
-* JasminJS
-* Karma
+* [NodeJS](http://nodejs.org/)
+* [JasminJS](http://pivotal.github.io/jasmine/)
+* [Karma](http://karma-runner.github.io/0.8/index.html)
 
 **BACKEND**
-* Python
-* LibEvent
-* MongoDB
+* [Python](http://www.python.org/)
+* [Gevent-SocketIO](https://gevent-socketio.readthedocs.org/en/latest/)
+* [MongoDB](http://www.mongodb.org/)
 
+___________________
 
 # Tutorial
 
@@ -100,7 +101,6 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 	We call them directives (see eg. http://docs.angularjs.org/api/ng.directive:ngRepeat) wich are markers so that the angular.js Javascript can do stuff
 	with them at runtime. So lets give web-developers a break by adding behaviour from those "data-" attributes and make the browser a better platform to develop in.
 	Hooray!!! No more low-level fiddling around with the DOM structure in Javascript.
-
 
 
 ### From mock template to live application
