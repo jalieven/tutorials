@@ -140,7 +140,7 @@ ___________________
 
 	init the app with ng-app="stream"
 
-	ng-init="events=[{
+		ng-init="events=[{
                             _id: '1',
                             occurance: '2013/05/07 8:15:16',
                             instigators: [
@@ -222,13 +222,14 @@ ___________________
                         }
                     ]"
 
-	ng-repeat="event in events" (and binding moustaches for the well-divs!)
+		ng-repeat="event in events" (and binding moustaches for the well-divs!)
 
-	search for <select id="filter-tags">:
-		add ng-model="eventFilter.tags" attribute
-		and in our previous ng-repeat="event in events | filter:eventFilter | orderBy: 'occurance'"
-		now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
-		actually we want a user-friendly date filter so do this:
+		search for <select id="filter-tags">:
+
+			add ng-model="eventFilter.tags" attribute
+			and in our previous ng-repeat="event in events | filter:eventFilter | orderBy: 'occurance'"
+			now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
+			actually we want a user-friendly date filter so do this:
 
 			angular.module('streamApp').
               	filter('fromNow', function() {
