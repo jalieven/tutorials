@@ -17,6 +17,7 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 * [AngularJS](http://angularjs.org/)
 * [Bootstrap](http://twitter.github.io/bootstrap/)
 * [Darkstrap](https://github.com/danneu/darkstrap)
+* [MomentJS](http://momentjs.com/)
 * [SocketIO](http://socket.io/)
 * [BreezeJS](http://www.breezejs.com/)
 
@@ -88,7 +89,7 @@ ___________________
 								---------------
 
 
-* What are these "data-" (or less standard "ng-") attributes for?
+* What are these "(data-)ng-XXX" attributes for?
 
 	W3C Specification says:
 
@@ -99,8 +100,29 @@ ___________________
 	AngularJS says:
 
 	We call them directives (see eg. http://docs.angularjs.org/api/ng.directive:ngRepeat) wich are markers so that the angular.js Javascript can do stuff
-	with them at runtime, actually a way to teach html new tricks. So lets give web-developers a break by adding behaviour from those "data-" attributes and make the browser a better platform to develop in.
+	with them at runtime, actually a way to teach html new tricks. Actually in the AngularJS internals this is performed by a thing called the HTML Compiler.
+	The compiler is an angular service which traverses the DOM looking for attributes. The compilation process happens in two phases.
+
+        * Compile: traverse the DOM and collect all of the directives. The result is a linking function.
+        * Link: combine the directives with a scope and produce a live view.
+        		Any changes in the scope model are reflected in the view,
+        		and any user interactions with the view are reflected in the scope model.
+        		This makes the scope model the single source of truth.
+
+    Some directives such ng-repeat clone DOM elements once for each item in collection.
+    Having a compile and link phase improves performance since the cloned template only needs to be compiled once, and then linked once for each clone instance.
+
+	So lets give web-developers a break by adding behaviour from those "data-" attributes and make the browser a better platform to develop in.
 	Hooray!!! No more low-level fiddling around with the DOM structure in Javascript.
+	So you can even go further and create your own DSL (as in your own custom HTML dialect).
+	The directives can be placed in element names, attributes, class names, as well as comments and are basically just functions which executes when the compiler encounters it in the DOM.
+
+* What's the deal with these scope-thingies?
+
+	Both controllers and directives have reference to the scope, but not to each other. This arrangement isolates the controller from the directive as well as from DOM.
+	This is an important point since it makes the controllers view agnostic, which greatly improves the testing story of the applications.
+
+	For more info see: http://docs.angularjs.org/guide/scope
 
 * How 'bout filters. What are those?
 
@@ -108,9 +130,9 @@ ___________________
 
 * What's the relation between the View and the Controllers?
 
-	Normally the View wouldn't know about the Controller (but it can through the "ng-controller" directive, but is not the recommended way of doing it).
-	The view and the Controller in the ideal case will be tied together when defining the routes through a routeProvider.
-	Inversely the Controller should absolutely never know about the View it is controlling!
+	Normally the View wouldn't know about the Controller (but it can if you use the "ng-controller" directive, but this is not the recommended way of doing it).
+	In the ideal case the view and the Controller will be tied together when defining the routes through the routeProvider.
+	Inversely the Controller should absolutely never know about the View it is controlling! This makes the Controller view agnostic and makes testing your UI a breeze.
 
 ### From mock template to live application
 
@@ -286,4 +308,11 @@ ___________________
 	TODO
 
 6. I18n
-7. Test the create event use-case
+
+	TODO
+	but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
+
+7. Test the create event use-case and the custom directive:
+
+	TODO
+	but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
