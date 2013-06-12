@@ -16,6 +16,7 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 **UI**
 * [AngularJS](http://angularjs.org/)
 * [Bootstrap](http://twitter.github.io/bootstrap/)
+* [Bootstrap-DateTimePicker](http://www.malot.fr/bootstrap-datetimepicker/)
 * [Darkstrap](https://github.com/danneu/darkstrap)
 * [MomentJS](http://momentjs.com/)
 * [SocketIO](http://socket.io/)
@@ -238,7 +239,7 @@ ___________________
                 	};
               	});
 
-    	now use "| fromNow" as a filter.
+		now use "| fromNow" as a filter.
 
 1. Create a Module and modularize the application with routes, controllers and everything.
 
@@ -279,7 +280,7 @@ ___________________
 
             streamApp.controller(controllers);
 
-	Now break up the main html with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
+	Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
 
 		<div data-ng-view=""></div>
 
@@ -340,7 +341,56 @@ ___________________
 			);
 		};
 
-	TODO: do something similar with the comments...
+	Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
+	input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
+	To fix this we need to:
+		* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
+		* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
+		* Basically you'd want something like:
+
+			<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+
+	Make a new partial:
+
+			<div class="control-group input-append date datetime">
+                <input type="text" name="datetime" ng-model="ngModel" required>
+                <span class="add-on"><em class="icon-remove"></em></span>
+                <span class="add-on"><em class="icon-th"></em></span>
+            </div>
+
+	Create new directive:
+
+			streamApp.directive('dateTimePicker', function(){
+                return {
+                    restrict: 'E',
+                    replace: true,
+                    require: '?ngModel',
+                    templateUrl: 'partial/datetimepicker.html',
+                    link: function(scope, element, attrs, ngModel){
+                        var input = element.find('input');
+
+                        element.datetimepicker({
+                            format: "yyyy/mm/dd hh:ii:ss",
+                            pickerPosition: 'bottom-left',
+                            autoclose: true,
+                            todayBtn: true
+                        })
+
+                        element.bind('blur keyup change', function() {
+                            scope.$apply(read);
+                        });
+
+                        read(); // initialize
+
+                        // Write data to the model
+                        function read() {
+                            ngModel.$setViewValue(input.val());
+                        }
+                    }
+                }
+            });
+
+	TODO: do creation of the comments in angularjs...
 
 4. Create an custom directive for the "event-well" which is used all over the place.
 
