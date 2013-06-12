@@ -1,0 +1,412 @@
+<div id="streamContainer">
+
+    <h2>Live Stream</h2>
+
+    <div>
+        <div class="btn-toolbar pull-right" style="margin: 0;">
+            <div class="btn-group">
+                <a href="#createEvent" class="btn btn-danger btn-small" data-toggle="modal"><i class="icon-white icon-plus"></i>  Create</a>
+            </div>
+            <div class="btn-group">
+                <a href="#searchEvent" class="btn btn-danger btn-small" data-toggle="modal"><i class="icon-white icon-search"></i>  Search</a>
+            </div>
+            <div class="btn-group">
+                <div class="dropdown-btn">
+                    <a href="#" class="btn btn-danger btn-small" data-toggle="dropdown"><i class="icon-white icon-filter"></i>  Filter</a>
+                    <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px; background-color: #202020;">
+                        <form>
+                            <div class="control-group">
+                                <label class="control-label" for="filter-tags">Tags</label>
+                                <div class="controls">
+                                    <select id="filter-tags" multiple="multiple" class="input-large" size="18" data-ng-model="eventFilter.tags">
+                                        <option value="ABSENCE">Absence</option>
+                                        <option value="BAMBOO">Bamboo</option>
+                                        <option value="COMMIT-AND-RUN">Commit And Run</option>
+                                        <option value="COMPLIANCE">Compliance</option>
+                                        <option value="COMPLAINT">Complaint</option>
+                                        <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                                        <option value="HACK">Hack</option>
+                                        <option value="HELP-REQUEST">Help Request</option>
+                                        <option value="MAINTENANCE">Maintenance</option>
+                                        <option value="NEXUS">Nexus</option>
+                                        <option value="PRAISE">Praise</option>
+                                        <option value="QUIBBLE">Quibble</option>
+                                        <option value="QUIP">Quip</option>
+                                        <option value="REDEPLOYMENT">Redeployment</option>
+                                        <option value="SERVER-RESTART">Server Restart</option>
+                                        <option value="SONAR">Sonar</option>
+                                        <option value="TECHNICAL-QUESTION">Technical Question</option>
+                                        <option value="TODO">Todo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <br />
+
+
+    <div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter | orderBy: 'occurrence':true">
+        <p>
+            <span class="badge">{{event.occurrence | fromNow}}</span>
+        </p>
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span6">
+                    <p>
+                        <strong>Message:</strong>
+                        {{event.message}}
+                    </p>
+                    <p>
+                        <strong>Link:</strong>
+                        <a href="{{event.link}}" target="_blank">{{event.link}}</a>
+                    </p>
+                </div>
+                <div class="span4">
+                    <p>
+                        <strong>Instigators:</strong>
+                        <div data-ng-repeat="instigator in event.instigators" class="row-fluid">
+                                        <span class="label label-info">
+                                            {{instigator}}
+                                        </span>
+                        </div>
+                    </p>
+
+                    <p>
+                        <strong>Tags:</strong>
+                    <div data-ng-repeat="tag in event.tags" class="row-fluid">
+                        <span class="label label-warning">{{tag}}</span>
+                    </div>
+                    </p>
+                </div>
+                <div class="span2">
+                    <p>
+                        <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small">Comments: 3</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- This is the modal "create an event" form -->
+    <div id="createEvent" class="modal hide fade" style="display: none; ">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3>Create an event</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal well">
+                <div class="control-group">
+                    <label class="control-label" for="create-occurrence-datetimepicker">Occurrence</label>
+                    <div class="controls">
+                        <div id="create-occurrence-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text" data-ng-model="newEvent.occurrence"/>
+                            <span class="add-on">
+                              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                              </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-instigators">Instigators</label>
+                    <div class="controls">
+                        <select id="create-instigators" multiple="multiple"
+                                class="input-large" size="2" data-ng-model="newEvent.instigators">
+                            <option value="jalie">jalie</option>
+                            <option value="tiroo">tiroo</option>
+                            <option value="gertdw">gertdw</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-judgement">Judgement</label>
+                    <div class="controls">
+                        <select id="create-judgement" multiple="multiple" class="input-large"
+                                size="2" data-ng-model="newEvent.judgement">
+                            <option value="ALARMING">Alarming</option>
+                            <option value="DETERIORATING">Deteriorating</option>
+                            <option value="FAIL">Fail</option>
+                            <option value="FUNNY">Funny</option>
+                            <option value="GRAVE">Grave</option>
+                            <option value="HEROLIKE">Herolike</option>
+                            <option value="IMPROVING">Improving</option>
+                            <option value="INDIFFERENT">Indifferent</option>
+                            <option value="INFORMATIVE">Informative</option>
+                            <option value="PALM_FACE">Palm/Face</option>
+                            <option value="SHAMEFUL">Shameful</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-tags">Tags</label>
+                    <div class="controls">
+                        <select id="create-tags" multiple="multiple" class="input-large"
+                                size="2" data-ng-model="newEvent.tags">
+                            <option value="ABSENCE">Absence</option>
+                            <option value="BAMBOO">Bamboo</option>
+                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                            <option value="COMPLIANCE">Compliance</option>
+                            <option value="COMPLAINT">Complaint</option>
+                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                            <option value="HACK">Hack</option>
+                            <option value="HELP-REQUEST">Help Request</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="NEXUS">Nexus</option>
+                            <option value="PRAISE">Praise</option>
+                            <option value="QUIBBLE">Quibble</option>
+                            <option value="QUIP">Quip</option>
+                            <option value="REDEPLOYMENT">Redeployment</option>
+                            <option value="SERVER-RESTART">Server Restart</option>
+                            <option value="SONAR">Sonar</option>
+                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                            <option value="TODO">Todo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-link">Link</label>
+                    <div class="controls">
+                        <input id="create-link" type="url" placeholder="URL" class="input-large"
+                               data-ng-model="newEvent.link">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-message">Message</label>
+                    <div class="controls">
+                        <textarea id="create-message" class="input-large" placeholder="Message..."
+                                  data-ng-model="newEvent.message"></textarea>
+                    </div>
+                </div>
+
+                <div class="well">
+                    <p>
+                        <span class="badge">{{newEvent.occurrence | fromNow}}</span>
+                    </p>
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <p data-ng-hide="!newEvent.message">
+                                    <strong>Message:</strong>
+                                    {{newEvent.message}}
+                                </p>
+
+                                <p data-ng-hide="!newEvent.link">
+                                    <strong>Link:</strong>
+                                    {{newEvent.link}}
+                                </p>
+                            </div>
+                            <div class="span4">
+                                <p data-ng-hide="!newEvent.instigators">
+                                    <strong>Instigators:</strong>
+                                    <div data-ng-repeat="instigator in newEvent.instigators" class="row-fluid">
+                                        <span class="label label-info">
+                                            {{instigator}}
+                                        </span>
+                                    </div>
+                                </p>
+
+                                <p data-ng-hide="!newEvent.tags">
+                                    <strong>Tags:</strong>
+                                    <div data-ng-repeat="tag in newEvent.tags" class="row-fluid">
+                                        <span class="label label-warning">
+                                            {{tag}}
+                                        </span>
+                                    </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal" data-ng-click="createEvent()">Create</a>
+        </div>
+    </div>
+
+    <!-- This is the modal "searching for events" form -->
+    <div id="searchEvent" class="modal hide fade" style="display: none; ">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3>Search for events</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal well">
+
+                <div class="control-group">
+                    <label class="control-label" for="search-from-datetimepicker">From</label>
+                    <div class="controls">
+                        <div id="search-from-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                                <span class="add-on">
+                                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                  </i>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="search-to-datetimepicker">To</label>
+                    <div class="controls">
+                        <div id="search-to-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                                <span class="add-on">
+                                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                                  </i>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="search-instigators">Instigators</label>
+                    <div class="controls">
+                        <select id="search-instigators" multiple="multiple"
+                                class="input-large" size="2">
+                            <option value="jalie">jalie</option>
+                            <option value="tiroo">tiroo</option>
+                            <option value="gertdw">gertdw</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-judgement">Judgement</label>
+                    <div class="controls">
+                        <select id="search-judgement" size="2" class="input-large">
+                            <option value="ALARMING">Alarming</option>
+                            <option value="DETERIORATING">Deteriorating</option>
+                            <option value="FAIL">Fail</option>
+                            <option value="FUNNY">Funny</option>
+                            <option value="GRAVE">Grave</option>
+                            <option value="HEROLIKE">Herolike</option>
+                            <option value="IMPROVING">Improving</option>
+                            <option value="INDIFFERENT">Indifferent</option>
+                            <option value="INFORMATIVE">Informative</option>
+                            <option value="PALM_FACE">Palm/Face</option>
+                            <option value="SHAMEFUL">Shameful</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-tags">Tags</label>
+                    <div class="controls">
+                        <select id="search-tags" multiple="multiple" class="input-large"
+                                size="2">
+                            <option value="ABSENCE">Absence</option>
+                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                            <option value="COMPLIANCE">Compliance</option>
+                            <option value="COMPLAINT">Complaint</option>
+                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                            <option value="HACK">Hack</option>
+                            <option value="HELP-REQUEST">Help Request</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="PRAISE">Praise</option>
+                            <option value="QUIBBLE">Quibble</option>
+                            <option value="QUIP">Quip</option>
+                            <option value="REDEPLOYMENT">Redeployment</option>
+                            <option value="SERVER-RESTART">Server Restart</option>
+                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                            <option value="TODO">Todo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="search-message">Message</label>
+
+                    <div class="controls">
+                        <textarea id="search-message" class="input-large" placeholder="Message..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal">Search</a>
+        </div>
+    </div>
+
+    <!-- This is the modal "comment on an event" form -->
+    <div id="commentEvent" class="modal hide fade" style="display: none; ">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3>Comment on an event</h3>
+        </div>
+        <div class="modal-body">
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td width="140px">2013/06/08 18:10:16</td>
+                    <td>jalie</td>
+                    <td>Nicely done. Would be cool with fries.</td>
+                </tr>
+                <tr>
+                    <td width="140px">2013/06/08 18:18:16</td>
+                    <td>jacob</td>
+                    <td>What about mayo?</td>
+                </tr>
+                <tr>
+                    <td width="140px">2013/06/08 18:18:16</td>
+                    <td>benh</td>
+                    <td>I want a "balleken"... and I want this comment to be very long so I will talk a bit more... Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="create-comment">Message</label>
+
+                    <div class="controls">
+                        <textarea id="create-comment" class="input-xlarge" placeholder="Comment..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal">Comment</a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $('#create-occurrence-datetimepicker').datetimepicker({
+                format: 'yyyy/MM/dd hh:mm:ss'
+            });
+            $('#search-from-datetimepicker').datetimepicker({
+                format: 'yyyy/MM/dd hh:mm:ss'
+            });
+            $('#search-to-datetimepicker').datetimepicker({
+                format: 'yyyy/MM/dd hh:mm:ss'
+            });
+
+            // Setup drop down menu
+            $('.dropdown-toggle').dropdown();
+
+            // Fix input element click problem
+            $('.dropdown input, .dropdown select, .dropdown label').click(function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+
+</div>
