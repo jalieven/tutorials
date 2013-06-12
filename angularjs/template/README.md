@@ -16,6 +16,7 @@ Gevent-socketio, cross-framework real-time web live demo : http://www.youtube.co
 **UI**
 * [AngularJS](http://angularjs.org/)
 * [Bootstrap](http://twitter.github.io/bootstrap/)
+* [Bootstrap-DateTimePicker](http://www.malot.fr/bootstrap-datetimepicker/)
 * [Darkstrap](https://github.com/danneu/darkstrap)
 * [MomentJS](http://momentjs.com/)
 * [SocketIO](http://socket.io/)
@@ -287,8 +288,6 @@ ___________________
 
 		<a href="#/about">...
 
-	>>> TODO: links in navbar moeten weg en knoppen bijsteken voor creatie en search aangezien de create/search anders niet gaat werken in de StreamController!
-	>>> TODO rename 'occurance' typo
 	>>> TODO why doesn't the occurrence bind normally?
 	>>> TODO check the date-formats consistency
 
@@ -345,7 +344,16 @@ ___________________
 			);
 		};
 
-	TODO: do something similar with the comments...
+	Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
+	input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
+	To fix this we need to:
+		* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
+		* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
+		* Basically you'd want something like:
+
+			<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+
+	TODO: do creation of the comments in angularjs...
 
 4. Create an custom directive for the "event-well" which is used all over the place.
 
