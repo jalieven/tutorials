@@ -353,6 +353,46 @@ ___________________
 
 			<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
 
+	Make a new partial:
+
+			<div class="control-group input-append date datetime">
+                <input type="text" name="datetime" ng-model="ngModel" required>
+                <span class="add-on"><em class="icon-remove"></em></span>
+                <span class="add-on"><em class="icon-th"></em></span>
+            </div>
+
+	Create new directive:
+
+			streamApp.directive('dateTimePicker', function(){
+                return {
+                    restrict: 'E',
+                    replace: true,
+                    require: '?ngModel',
+                    templateUrl: 'partial/datetimepicker.html',
+                    link: function(scope, element, attrs, ngModel){
+                        var input = element.find('input');
+
+                        element.datetimepicker({
+                            format: "yyyy/mm/dd hh:ii:ss",
+                            pickerPosition: 'bottom-left',
+                            autoclose: true,
+                            todayBtn: true
+                        })
+
+                        element.bind('blur keyup change', function() {
+                            scope.$apply(read);
+                        });
+
+                        read(); // initialize
+
+                        // Write data to the model
+                        function read() {
+                            ngModel.$setViewValue(input.val());
+                        }
+                    }
+                }
+            });
+
 	TODO: do creation of the comments in angularjs...
 
 4. Create an custom directive for the "event-well" which is used all over the place.
