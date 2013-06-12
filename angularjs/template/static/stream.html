@@ -32,8 +32,6 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li><a href="stream.html">Live Stream</a></li>
-                        <li><a data-toggle="modal" href="#createEvent">Create</a></li>
-                        <li><a data-toggle="modal" href="#searchEvent">Search</a></li>
                     </ul>
                     <ul class="nav pull-right">
                         <li><a href="about.html">About</a></li>
@@ -49,42 +47,50 @@
         <div>
             <h2>Live Stream</h2>
 
-            <div>
-                <div class="btn-group pull-right dropdown">
-                    <a href="#" class="btn btn-danger btn-small" data-toggle="dropdown" ><i class="icon-white icon-filter"></i>  Filter</a>
-                    <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px; background-color: #202020;">
-                        <form>
-                            <div class="control-group">
-                                <label class="control-label" for="filter-tags">Tags</label>
-                                <div class="controls">
-                                    <select id="filter-tags" multiple="multiple" class="input-large" size="18">
-                                        <option value="ABSENCE">Absence</option>
-                                        <option value="BAMBOO">Bamboo</option>
-                                        <option value="COMMIT-AND-RUN">Commit And Run</option>
-                                        <option value="COMPLIANCE">Compliance</option>
-                                        <option value="COMPLAINT">Complaint</option>
-                                        <option value="FUNCTIONAL-QUESTION">Functional Question</option>
-                                        <option value="HACK">Hack</option>
-                                        <option value="HELP-REQUEST">Help Request</option>
-                                        <option value="MAINTENANCE">Maintenance</option>
-                                        <option value="NEXUS">Nexus</option>
-                                        <option value="PRAISE">Praise</option>
-                                        <option value="QUIBBLE">Quibble</option>
-                                        <option value="QUIP">Quip</option>
-                                        <option value="REDEPLOYMENT">Redeployment</option>
-                                        <option value="SERVER-RESTART">Server Restart</option>
-                                        <option value="SONAR">Sonar</option>
-                                        <option value="TECHNICAL-QUESTION">Technical Question</option>
-                                        <option value="TODO">Todo</option>
-                                    </select>
+            <div class="btn-toolbar pull-right" style="margin: 0;">
+                <div class="btn-group">
+                    <a href="#createEvent" class="btn btn-danger btn-small" data-toggle="modal"><i class="icon-white icon-plus"></i> Create</a>
+                </div>
+                <div class="btn-group">
+                    <a href="#searchEvent" class="btn btn-danger btn-small" data-toggle="modal"><i class="icon-white icon-search"></i> Search</a>
+                </div>
+                <div class="btn-group">
+                    <div class="dropdown-btn">
+                        <a href="#" class="btn btn-danger btn-small" data-toggle="dropdown"><i class="icon-white icon-filter"></i> Filter</a>
+                        <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px; background-color: #202020;">
+                            <form>
+                                <div class="control-group">
+                                    <label class="control-label" for="filter-tags">Tags</label>
+                                    <div class="controls">
+                                        <select id="filter-tags" multiple="multiple" class="input-large" size="18" data-ng-model="eventFilter.tags">
+                                            <option value="ABSENCE">Absence</option>
+                                            <option value="BAMBOO">Bamboo</option>
+                                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                                            <option value="COMPLIANCE">Compliance</option>
+                                            <option value="COMPLAINT">Complaint</option>
+                                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                                            <option value="HACK">Hack</option>
+                                            <option value="HELP-REQUEST">Help Request</option>
+                                            <option value="MAINTENANCE">Maintenance</option>
+                                            <option value="NEXUS">Nexus</option>
+                                            <option value="PRAISE">Praise</option>
+                                            <option value="QUIBBLE">Quibble</option>
+                                            <option value="QUIP">Quip</option>
+                                            <option value="REDEPLOYMENT">Redeployment</option>
+                                            <option value="SERVER-RESTART">Server Restart</option>
+                                            <option value="SONAR">Sonar</option>
+                                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                                            <option value="TODO">Todo</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="control-group">
-                                <div class="controls">
-                                    <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" />
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" />
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -181,9 +187,9 @@
             <div class="modal-body">
                 <form class="form-horizontal well">
                     <div class="control-group">
-                        <label class="control-label" for="create-occurance-datetimepicker">Occurance</label>
+                        <label class="control-label" for="create-occurrence-datetimepicker">Occurrence</label>
                         <div class="controls">
-                            <div id="create-occurance-datetimepicker" class="input-append date">
+                            <div id="create-occurrence-datetimepicker" class="input-append date">
                                 <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
                                 <span class="add-on">
                                   <i data-time-icon="icon-time" data-date-icon="icon-calendar">
@@ -463,7 +469,7 @@
     <script type="text/javascript">
         $(function () {
 
-            $('#create-occurance-datetimepicker').datetimepicker({
+            $('#create-occurrence-datetimepicker').datetimepicker({
                 format: 'yyyy/MM/dd hh:mm:ss'
             });
             $('#search-from-datetimepicker').datetimepicker({
