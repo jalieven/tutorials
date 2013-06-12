@@ -55,7 +55,7 @@
                     <a href="#searchEvent" class="btn btn-danger btn-small" data-toggle="modal"><i class="icon-white icon-search"></i> Search</a>
                 </div>
                 <div class="btn-group">
-                    <div class="dropdown-btn">
+                    <div class="dropdown-btn pull-right">
                         <a href="#" class="btn btn-danger btn-small" data-toggle="dropdown"><i class="icon-white icon-filter"></i> Filter</a>
                         <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px; background-color: #202020;">
                             <form>
@@ -483,7 +483,7 @@
             $('.dropdown-toggle').dropdown();
 
             // Fix input element click problem
-            $('.dropdown input, .dropdown select, .dropdown label').click(function(e) {
+            $('.dropdown-menu input, .dropdown-menu select, .dropdown-menu label').click(function(e) {
                 e.stopPropagation();
             });
         });
