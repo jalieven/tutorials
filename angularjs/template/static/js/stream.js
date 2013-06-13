@@ -110,10 +110,6 @@ controllers.StreamController = function ($scope) {
         );
     };
 
-    $scope.dateChanged = function() {
-        alert($scope.newEvent.occurrence);
-    }
-
 }
 
 controllers.AboutController = function ($scope) {
@@ -191,3 +187,4 @@ streamApp.directive('dateTimePicker', function(){
         }
     }
 });
+

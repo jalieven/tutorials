@@ -288,8 +288,7 @@ ___________________
 
 		<a href="#/about">...
 
-	>>> TODO why doesn't the occurrence bind normally?
-	>>> TODO check the date-formats consistency
+	>>> TODO overheveling markup labeling inline
 
 	If that is done show the history-feature in the browser.
 
@@ -410,5 +409,47 @@ ___________________
 
 7. Test the create event use-case and the custom directive:
 
+	For testing with Karma first install nodejs and npm. After that you can use npm to install karma and create an initial file:
+
+		npm install -g karma
+		cd /path/to/project/template/test
+		karma init stream.conf.js
+
+	Make sure to anwer "Yes" on the question: "Do you want Testacular to watch all the files and run the tests on change?"
+	This step will create a stream.conf.js file in yout test directory.
+
+	After that you have to configure a "Karma Server" in WebStorm:
+
+	* Press the “+” button in the top-left of the “Run/Debug Configurations” dialog.
+    * Select “Node.js” in the list
+    * Name: enter “Karma Server”
+    * Path to Node: absolute path to NodeJS executable
+    * Working Directory: absolute path of your module test dir (i.e. /path/to/project/template/test)
+    * Path to Node App JS File: should point to the (globally) installed “Karma” NodeJs executable
+    * Application Parameters: "start stream.conf.js --no-single-run --auto-watch --reporters dots"
+
+	Now you are ready to write some test cases which you normally put in the directory "/path/to/project/template/test/js".
+	That is if you have the following in your stream.conf.js file:
+
+		basePath = '../static';
+        files = [
+            JASMINE,
+            JASMINE_ADAPTER,
+            'js/vendor/jquery.min.js',
+            'js/vendor/bootstrap.min.js',
+            'js/vendor/bootstrap-datetimepicker.min.js',
+            'js/vendor/moment.min.js',
+            'js/vendor/angular.min.js',
+            '../test/js/vendor/angular-mocks.js',
+			'../test/js/*.unit.js'
+        ];
+
+	So make sure the basePath points to the JavaScript files that are to be watched and all files under "files" config-param
+	are accessible.
+
+	Now when you write tests for JavaScript in folder "test/js" and you change/save anything in "../static/js" that is tested
+	then those tests will be run automagically.
+
 	TODO
 	but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
+	and http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-controllers

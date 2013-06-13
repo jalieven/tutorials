@@ -74,21 +74,14 @@
                     </p>
                 </div>
                 <div class="span4">
-                    <p>
-                        <strong>Instigators:</strong>
-                        <div data-ng-repeat="instigator in event.instigators" class="row-fluid">
-                            <span class="label label-info">
-                                {{instigator}}
-                            </span>
-                        </div>
-                    </p>
-
-                    <p>
-                        <strong>Tags:</strong>
-                    <div data-ng-repeat="tag in event.tags" class="row-fluid">
-                        <span class="label label-warning">{{tag}}</span>
-                    </div>
-                    </p>
+                    <ul class="inline labeling">
+                        <li><strong>Instigators:</strong></li>
+                        <li data-ng-repeat="instigator in event.instigators" class="label label-info">{{instigator}}</li>
+                    </ul>
+                    <ul class="inline labeling">
+                        <li><strong>Tags:</strong></li>
+                        <li data-ng-repeat="tag in event.tags" class="label label-warning">{{tag}}</li>
+                    </ul>
                 </div>
                 <div class="span2">
                     <p>
@@ -201,23 +194,15 @@
                                     {{newEvent.link}}
                                 </p>
                             </div>
-                            <div class="span4">
-                                <p data-ng-hide="!newEvent.instigators">
-                                    <strong>Instigators:</strong>
-                                    <div data-ng-repeat="instigator in newEvent.instigators" class="row-fluid">
-                                        <span class="label label-info">
-                                            {{instigator}}
-                                        </span>
-                                    </div>
-                                </p>
-                                <p data-ng-hide="!newEvent.tags">
-                                    <strong>Tags:</strong>
-                                    <div data-ng-repeat="tag in newEvent.tags" class="row-fluid">
-                                        <span class="label label-warning">
-                                            {{tag}}
-                                        </span>
-                                    </div>
-                                </p>
+                            <div class="span6">
+                                <ul class="inline labeling" data-ng-hide="!newEvent.instigators">
+                                    <li><strong>Instigators:</strong></li>
+                                    <li data-ng-repeat="instigator in newEvent.instigators" class="label label-info">{{instigator}}</li>
+                                </ul>
+                                <ul class="inline labeling" data-ng-hide="!newEvent.tags">
+                                    <li><strong>Tags:</strong></li>
+                                    <li data-ng-repeat="tag in newEvent.tags" class="label label-warning">{{tag}}</li>
+                                </ul>
                             </div>
                         </div>
                     </div>

@@ -47,3 +47,8 @@
         width: 200px;
     }
 }
+
+/* Space the labels somewhat */
+.labeling li {
+    margin-left: 3px
+}
