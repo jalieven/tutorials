@@ -104,11 +104,11 @@ ___________________
 	with them at runtime, actually a way to teach html new tricks. Actually in the AngularJS internals this is performed by a thing called the HTML Compiler.
 	The compiler is an angular service which traverses the DOM looking for attributes. The compilation process happens in two phases.
 
-        * Compile: traverse the DOM and collect all of the directives. The result is a linking function.
-        * Link: combine the directives with a scope and produce a live view.
-        		Any changes in the scope model are reflected in the view,
-        		and any user interactions with the view are reflected in the scope model.
-        		This makes the scope model the single source of truth.
+	* Compile: traverse the DOM and collect all of the directives. The result is a linking function.
+	* Link: combine the directives with a scope and produce a live view.
+			Any changes in the scope model are reflected in the view,
+			and any user interactions with the view are reflected in the scope model.
+			This makes the scope model the single source of truth.
 
     Some directives such ng-repeat clone DOM elements once for each item in collection.
     Having a compile and link phase improves performance since the cloned template only needs to be compiled once, and then linked once for each clone instance.
@@ -139,7 +139,9 @@ ___________________
 
 1. First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
 
-		python -m SimpleHTTPServer 8000
+```bash
+python -m SimpleHTTPServer 8000
+```
 
 2. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
 
@@ -227,7 +229,7 @@ Here's the data-model:
                         }
                     ]"
 
-data-ng-repeat="event in events" (and binding moustaches for the well-divs!)
+Put data-ng-repeat="event in events" (and binding moustaches for the well-divs!) in the well-element.
 
 Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute
 and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
@@ -294,11 +296,15 @@ streamApp.controller(controllers);
 
 Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
 
-	<div data-ng-view=""></div>
+```html
+<div data-ng-view=""></div>
+```
 
 And add the href to the "About" button on the view.
 
-	<a href="#/about">...
+```html
+<a href="#/about">...
+```
 
 >>> TODO overheveling markup labeling inline
 
@@ -328,7 +334,9 @@ streamApp.filter("tagsFilter", function() {
 
 Let's plug in the filter:
 
-	<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
+```html
+<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
+```
 
 Now lets fix the clear button:
 
@@ -338,7 +346,9 @@ $scope.clearFilter = function(){
 };
 ```
 
-		<input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
+```html
+<input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
+```
 
 4. Now that we can view and filter the stream we can now work on the event-creation use-case.
 
@@ -364,19 +374,23 @@ $scope.createEvent = function() {
 Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
 input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
 To fix this we need to:
-	* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
-	* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
-	* Basically you'd want something like:
+* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
+* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
+* Basically you'd want something like:
 
-		<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+```html
+<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+```
 
 Make a new partial:
 
-		<div class="control-group input-append date datetime">
-			<input type="text" name="datetime" ng-model="ngModel" required>
-			<span class="add-on"><em class="icon-remove"></em></span>
-			<span class="add-on"><em class="icon-th"></em></span>
-		</div>
+```html
+<div class="control-group input-append date datetime">
+	<input type="text" name="datetime" ng-model="ngModel" required>
+	<span class="add-on"><em class="icon-remove"></em></span>
+	<span class="add-on"><em class="icon-th"></em></span>
+</div>
+```
 
 Create a new "date picking" directive:
 
@@ -427,38 +441,40 @@ but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-
 
 For testing with Karma first install nodejs and npm. After that you can use npm to install karma and create an initial file:
 
+```bash
 	npm install -g karma
 	cd /path/to/project/template/test
 	karma init stream.conf.js
+```
 
 Make sure to anwer "Yes" on the question: "Do you want Testacular to watch all the files and run the tests on change?"
 This step will create a stream.conf.js file in yout test directory.
 
 After that you have to configure a "Karma Server" in WebStorm:
 
-	* Press the “+” button in the top-left of the “Run/Debug Configurations” dialog.
-    * Select “Node.js” in the list
-    * Name: enter “Karma Server”
-    * Path to Node: absolute path to NodeJS executable
-    * Working Directory: absolute path of your module test dir (i.e. /path/to/project/template/test)
-    * Path to Node App JS File: should point to the (globally) installed “Karma” NodeJs executable
-    * Application Parameters: "start stream.conf.js --no-single-run --auto-watch --reporters dots"
+* Press the “+” button in the top-left of the “Run/Debug Configurations” dialog.
+* Select “Node.js” in the list
+* Name: enter “Karma Server”
+* Path to Node: absolute path to NodeJS executable
+* Working Directory: absolute path of your module test dir (i.e. /path/to/project/template/test)
+* Path to Node App JS File: should point to the (globally) installed “Karma” NodeJs executable
+* Application Parameters: "start stream.conf.js --no-single-run --auto-watch --reporters dots"
 
 Now you are ready to write some test cases which you normally put in the directory "/path/to/project/template/test/js".
 That is if you have the following in your stream.conf.js file:
 
-		basePath = '../static';
-        files = [
-            JASMINE,
-            JASMINE_ADAPTER,
-            'js/vendor/jquery.min.js',
-            'js/vendor/bootstrap.min.js',
-            'js/vendor/bootstrap-datetimepicker.min.js',
-            'js/vendor/moment.min.js',
-            'js/vendor/angular.min.js',
-            '../test/js/vendor/angular-mocks.js',
-			'../test/js/*.unit.js'
-        ];
+	basePath = '../static';
+	files = [
+		JASMINE,
+		JASMINE_ADAPTER,
+		'js/vendor/jquery.min.js',
+		'js/vendor/bootstrap.min.js',
+		'js/vendor/bootstrap-datetimepicker.min.js',
+		'js/vendor/moment.min.js',
+		'js/vendor/angular.min.js',
+		'../test/js/vendor/angular-mocks.js',
+		'../test/js/*.unit.js'
+	];
 
 So make sure the basePath points to the JavaScript files that are to be watched and all files under "files" config-param
 are accessible.
