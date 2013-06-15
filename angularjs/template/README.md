@@ -540,24 +540,26 @@ To refactor these structures let alone to handle errors in them is a pain in the
 Instead we can circumvent these structures in AngularJS like this. Let's say we have 2 functions that we
 would like to call but one after the other and both take a considerate amount of time (those freakin' slow
 backends...). Very importantly the output of the first function must be processed in the second one.
+Let's start off with a very naive function call-stack and build up from there.
 
 ```javascript
 var firstFunction = function(param) {
-	// do something with param
-	return 'firstResult';
+	return param + ' - firstResult';
 };
 
 var secondFunction = function(param) {
-	// do something with param
-	return 'secondResult';
+	return param + ' - secondResult';
 };
 
-// ultimately we want to call them one after the other
-// But this code sucks cuz it blocks the further execution of the program
-secondFn(firstFn());
+var thirdFunction = function(param) {
+	$scope.result = param;
+}
+// ultimately we want to call them one after the other so we naively code:
+thirdFunction(secondFunction(firstFunction()));
+// but this code sucks cuz it blocks the further execution of the program
 ```
 
-Here's how to do this the proper way in AngularJS:
+Here's how to do this the proper way in AngularJS with the $q api:
 
 ```javascript
 // first we create a new 'deferred' object, which represents a chain of operations
@@ -567,7 +569,7 @@ var promise = deferred.promise;
 // the 'then' method adds a step to the chain and then returns a new promise representing
 // the eventual result of the extended chain
 // you can add as many steps as you like
-promise = promise.then(firstFunction).then(secondFunction);
+promise = promise.then(firstFunction).then(secondFunction).then(thirdFunction);
 // so far, we have set up our chain of functions, but nothing has actually happened
 // you get things started by calling deferred.resolve,
 // specifying the initial value you want to pass to the first actual step in the chain
@@ -575,9 +577,174 @@ deferred.resolve('initial value');
 // and then...still nothing happens
 // to ensure that model changes are properly observed, Angular doesn't actually call the first step
 // in the chain until the next time $apply is called
-$rootScope.$apply();
-// or replace the last two lines with:
-$rootScope.$apply(function() {
-	deferred.resolve('initial value');
+$scope.$apply();
+```
+
+Now how about error handling in this refactored structure?
+Turns out you can provide a second function in the 'then' calls. Lets say we refactor our 'firstFunction' to
+contain a error-case:
+
+```javascript
+// if param is a 'bad value' we reject the deferred execution
+var firstFunction = function(param) {
+	if (param == 'bad value') {
+    	return $q.reject('invalid value');
+    } else {
+		return param + ' - firstResult';
+    }
+};
+// and we define an error handling function:
+var errorFn = function(message) {
+   $scope.result = 'Badness happened: ' + message;
+ };
+```
+So you can either place a error-handling function inside each 'then'-call or you can globally catch the case at the end.
+
+Now we will use MongoLab as a first backend to store and retrieve the Events. MongoLab is actually a plain vanilla
+MongoDB with a RESTful interface. This way we don't have to write a iota backend code.
+
+We first define a separate "services" Angular module and inject that into our main 'streamApp'.
+In the "services" module we'll put code on how to do CRUD operations on the Events resource.
+
+```javascript
+// our main app module (check out our "streamApp.services" injection!)
+var streamApp = angular.module('streamApp', ['streamApp.services']);
+
+// our new services module
+var streamAppServices = angular.module('streamApp.services', ['ngResource']);
+
+streamAppServices.factory('Event', function($resource) {
+    return $resource('https://api.mongolab.com/api/1/databases/events/collections/event/:id',
+        { apiKey: 'k8zps1HXroKSrtGtV_MBawdgtM6AblsF' },
+        {
+            get: {method: 'GET'},
+			update: { method: 'PUT' },
+			query:  {method:'GET', isArray:true}
+        }
+    );
 });
 ```
+So we defined an Angular "Resource" named 'Event'. The $resource api is actually a wrapper around the $http api.
+If you want to go lower level you can always inject the $http instead of the $resource.
+
+The first arg to the $resource function is the URL, the second is a hash with all the default-http-params and
+the third one is an hash with declaration of custom action.
+
+Instead of our lengthy JSON event domain model we do:
+```javascript
+...
+controllers.StreamController = function ($scope, Event) {
+	$scope.events = Event.query();
+...
+```
+
+When we launch this you will probably see the following in your console:
+
+	Error: No module: ngResource
+
+So add the angular-resource.min.js to the JavaScript includes on the index.html page.
+If all went well you'll see some events come in.
+
+Notice that we haven't done anything with the promise api! Bad bad, not good!
+Notice also that the html's and javascript gets loaded before we try to retrieve the events (the xhr call).
+Add the following factory that will use the first factory (mind the 'Event' injection):
+
+```javascript
+streamAppServices.factory('EventsLoader', ['Event', '$q', function(Event, $q) {
+    return function() {
+        var delay = $q.defer();
+        Event.query(function(events) {
+            delay.resolve(events);
+        }, function() {
+            delay.reject('Unable to fetch events!');
+        });
+        return delay.promise;
+    };
+}]);
+```
+Now we can change our StreamController into:
+
+```javascript
+...
+controllers.StreamController = function ($scope, EventsLoader) {
+	$scope.events = Event.query();
+...
+```
+
+We can also make AngularJS make a call to EventsLoader when it is needed i.e. in the StreamController that is!
+This way we can make sure everything is there (or shall I say injected) before we build up our UI-component and
+testing this is a breeze!
+
+```javascript
+streamApp.config(function ($routeProvider) {
+    $routeProvider
+        .when('/',
+        {
+            controller: 'StreamController',
+            templateUrl: 'partial/stream.html',
+            resolve: {
+                events: function(EventsLoader) {
+                    return EventsLoader();
+                }
+            }
+        })
+	...
+```
+
+The "resolve" directive in the "routeProvider" is an optional map of dependencies which should be injected
+into the controller. If any of these dependencies are promises, they will be resolved and converted
+to a value before the controller is instantiated.
+Now check out the order in which the html, javascripts and the xhr are called!
+
+
+Here's overview on how you can RESTfully call the MongoLab collections:
+
+		/databases
+		  GET - lists databases linked to the authenticated
+				account
+		/databases/<d>
+		  GET - lists sub-services for database <d>
+		/databases/<d>/collections
+		  GET - lists collections in database <d>
+		/databases/<d>/collections/<c>
+		  GET - lists objects in collection <c>
+		  POST - inserts a new object into collection <c>
+		/databases/<d>/collections/<c>/<id>
+		  GET - returns object with _id <id>
+		  PUT - modifies object (or creates if new)
+		  DELETE - deletes object with _id <id>
+		/databases/<d>/collections/<c>?[q=<query>][&c=true]
+		  [&f=<fields>][&fo=true][&s=<order>]
+		  [&sk=<skip>][&l=<limit>]
+		  GET - lists all objects matching these
+				optional params:
+			q: JSON queryreference
+			c: returns the result count for this query
+			f: set of fields to be returned in each object
+			   (1—include; 0—exclude)
+			   e.g. { "name" : 1, "email": 1 } OR
+			   e.g. { "comments" : 0 }
+		   fo: return a single object from the result set
+			   (same as 'findOne()' in the mongo shell)
+			s: sort order (1—asc; -1—desc)
+			   i.e. { <field> : <order> }
+		   sk: number of results to skip in the result set
+			l: limit for the number of results
+		/databases/<d>/collections/<c>?[q=<query>][&m=true]
+		  [&u=true]
+		  PUT - updates one or all objects matching the query.
+				payload should contain modifier operations
+			q: JSON queryreference
+			m: apply update to all objects in result set
+			   (by default, only one is updated)
+			u: insert if none match the query (upsert)
+
+### Last refactor
+
+Now for the last part we split up the stream.js file into multiple module files like so:
+
+1. filters.js > filters "fromNow" and "tagsFilter"
+2. directives.js > directives "dateTimePicker" and "eventWell"
+3. services.js > all the factories to do operations on
+4. app.js > controllers and config with all the other modules injected
+
