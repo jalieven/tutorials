@@ -137,13 +137,13 @@ ___________________
 
 ### From mock template to live application
 
-1. First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
+* First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
 
 ```bash
 python -m SimpleHTTPServer 8000
 ```
 
-2. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
+* Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
 
 Here's the data-model:
 
@@ -247,7 +247,7 @@ filter('fromNow', function() {
 
 now use "| fromNow" as a filter.
 
-3. Create a Module and modularize the application with routes, controllers and everything.
+* Create a Module and modularize the application with routes, controllers and everything.
 
 Start with the configuration of the app and explain the "dependency injection" syntax:
 
@@ -350,7 +350,7 @@ $scope.clearFilter = function(){
 <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
 ```
 
-4. Now that we can view and filter the stream we can now work on the event-creation use-case.
+* Now that we can view and filter the stream we can now work on the event-creation use-case.
 
 First put all the data-ng-model="newEvent.###" directives into the create-form and ultimately data-ng-click="createEvent()" onto the "Create"-btn.
 
@@ -428,16 +428,16 @@ streamApp.directive('dateTimePicker', function(){
 
 TODO: do creation of the comments in angularjs...
 
-5. Create an custom directive for the "event-well" which is used all over the place.
+* Create an custom directive for the "event-well" which is used all over the place.
 
 TODO
 
-6. I18n
+* I18n
 
 TODO
 but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
 
-7. Test the create event use-case and the custom directive:
+* Test the create event use-case and the custom directive:
 
 For testing with Karma first install nodejs and npm. After that you can use npm to install karma and create an initial file:
 
