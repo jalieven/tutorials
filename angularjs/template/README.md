@@ -143,7 +143,7 @@ ___________________
 
 2. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
 
-	Here's the data-model:
+Here's the data-model:
 
 		data-ng-init="events=[{
                             _id: '1',
@@ -227,14 +227,12 @@ ___________________
                         }
                     ]"
 
-	data-ng-repeat="event in events" (and binding moustaches for the well-divs!)
+data-ng-repeat="event in events" (and binding moustaches for the well-divs!)
 
-	search for <select id="filter-tags">:
-
-	add data-ng-model="eventFilter.tags" attribute
-	and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
-	now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
-	actually we want a user-friendly date filter so do this:
+Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute
+and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
+Now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
+Actually we want a user-friendly date filter so do this:
 
 ```javascript
 angular.module('streamApp').
@@ -245,17 +243,17 @@ filter('fromNow', function() {
 });
 ```
 
-	now use "| fromNow" as a filter.
+now use "| fromNow" as a filter.
 
 3. Create a Module and modularize the application with routes, controllers and everything.
 
-	Start with the configuration of the app and explain the "dependency injection" syntax:
+Start with the configuration of the app and explain the "dependency injection" syntax:
 
 ```javascript
 var streamApp = angular.module('streamApp', []);
 ```
 
-	Now for the less recommended way of creating a Controller (so cut away the "data-ng-init" from earlier):
+Now for the less recommended way of creating a Controller (so cut away the "data-ng-init" from earlier):
 
 ```javascript
 streamApp.controller('StreamController', function($scope) {
@@ -263,7 +261,7 @@ streamApp.controller('StreamController', function($scope) {
 });
 ```
 
-    Lets define 2 routes now: the stream page and the about page:
+Lets define 2 routes now: the stream page and the about page:
 
 ```javascript
 streamApp.config(function ($routeProvider) {
@@ -282,7 +280,7 @@ streamApp.config(function ($routeProvider) {
 });
 ```
 
-   	Or even better:
+Or even better:
 
 ```javascript
 var controllers = {};
@@ -294,19 +292,19 @@ controllers.AboutController = function ($scope) { ... }
 streamApp.controller(controllers);
 ```
 
-	Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
+Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
 
-		<div data-ng-view=""></div>
+	<div data-ng-view=""></div>
 
-	And add the href to the "About" button on the view.
+And add the href to the "About" button on the view.
 
-		<a href="#/about">...
+	<a href="#/about">...
 
-	>>> TODO overheveling markup labeling inline
+>>> TODO overheveling markup labeling inline
 
-	If that is done show the history-feature in the browser.
+If that is done show the history-feature in the browser.
 
-	Since we have a single tag select as filter now refactor to a multiple select:
+Since we have a single tag select as filter now refactor to a multiple select:
 
 ```javascript
 streamApp.filter("tagsFilter", function() {
@@ -328,11 +326,11 @@ streamApp.filter("tagsFilter", function() {
 });
 ```
 
-    Let's plug in the filter:
+Let's plug in the filter:
 
-    	<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
+	<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
 
-	Now lets fix the clear button:
+Now lets fix the clear button:
 
 ```javascript
 $scope.clearFilter = function(){
@@ -344,9 +342,9 @@ $scope.clearFilter = function(){
 
 4. Now that we can view and filter the stream we can now work on the event-creation use-case.
 
-	First put all the data-ng-model="newEvent.###" directives into the create-form and ultimately data-ng-click="createEvent()" onto the "Create"-btn.
+First put all the data-ng-model="newEvent.###" directives into the create-form and ultimately data-ng-click="createEvent()" onto the "Create"-btn.
 
-	Now we can create the controller createEvent() function, so add this into the StreamController:
+Now we can create the controller createEvent() function, so add this into the StreamController:
 
 ```javascript
 $scope.createEvent = function() {
@@ -363,24 +361,24 @@ $scope.createEvent = function() {
 };
 ```
 
-	Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
-	input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
-	To fix this we need to:
-		* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
-		* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
-		* Basically you'd want something like:
+Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
+input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
+To fix this we need to:
+	* Use the bootstrap-datetimepicker cuz it's awesome and I'm way to lazy to code something from scratch
+	* I'm going to need to wrap this plugin in a directive and use that directive. Doing it this way would be more inline with Angular and you'd be doing it "The Angular Way".
+	* Basically you'd want something like:
 
-			<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+		<date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
 
-	Make a new partial:
+Make a new partial:
 
-			<div class="control-group input-append date datetime">
-                <input type="text" name="datetime" ng-model="ngModel" required>
-                <span class="add-on"><em class="icon-remove"></em></span>
-                <span class="add-on"><em class="icon-th"></em></span>
-            </div>
+		<div class="control-group input-append date datetime">
+			<input type="text" name="datetime" ng-model="ngModel" required>
+			<span class="add-on"><em class="icon-remove"></em></span>
+			<span class="add-on"><em class="icon-th"></em></span>
+		</div>
 
-	Create a new "date picking" directive:
+Create a new "date picking" directive:
 
 ```javascript
 streamApp.directive('dateTimePicker', function(){
@@ -414,29 +412,29 @@ streamApp.directive('dateTimePicker', function(){
 });
 ```
 
-	TODO: do creation of the comments in angularjs...
+TODO: do creation of the comments in angularjs...
 
 5. Create an custom directive for the "event-well" which is used all over the place.
 
-	TODO
+TODO
 
 6. I18n
 
-	TODO
-	but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
+TODO
+but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
 
 7. Test the create event use-case and the custom directive:
 
-	For testing with Karma first install nodejs and npm. After that you can use npm to install karma and create an initial file:
+For testing with Karma first install nodejs and npm. After that you can use npm to install karma and create an initial file:
 
-		npm install -g karma
-		cd /path/to/project/template/test
-		karma init stream.conf.js
+	npm install -g karma
+	cd /path/to/project/template/test
+	karma init stream.conf.js
 
-	Make sure to anwer "Yes" on the question: "Do you want Testacular to watch all the files and run the tests on change?"
-	This step will create a stream.conf.js file in yout test directory.
+Make sure to anwer "Yes" on the question: "Do you want Testacular to watch all the files and run the tests on change?"
+This step will create a stream.conf.js file in yout test directory.
 
-	After that you have to configure a "Karma Server" in WebStorm:
+After that you have to configure a "Karma Server" in WebStorm:
 
 	* Press the “+” button in the top-left of the “Run/Debug Configurations” dialog.
     * Select “Node.js” in the list
@@ -446,8 +444,8 @@ streamApp.directive('dateTimePicker', function(){
     * Path to Node App JS File: should point to the (globally) installed “Karma” NodeJs executable
     * Application Parameters: "start stream.conf.js --no-single-run --auto-watch --reporters dots"
 
-	Now you are ready to write some test cases which you normally put in the directory "/path/to/project/template/test/js".
-	That is if you have the following in your stream.conf.js file:
+Now you are ready to write some test cases which you normally put in the directory "/path/to/project/template/test/js".
+That is if you have the following in your stream.conf.js file:
 
 		basePath = '../static';
         files = [
@@ -462,15 +460,15 @@ streamApp.directive('dateTimePicker', function(){
 			'../test/js/*.unit.js'
         ];
 
-	So make sure the basePath points to the JavaScript files that are to be watched and all files under "files" config-param
-	are accessible.
+So make sure the basePath points to the JavaScript files that are to be watched and all files under "files" config-param
+are accessible.
 
-	Now when you write tests for JavaScript in folder "test/js" and you change/save anything in "../static/js" that is tested
-	then those tests will be run auto-magically.
+Now when you write tests for JavaScript in folder "test/js" and you change/save anything in "../static/js" that is tested
+then those tests will be run auto-magically.
 
-	TODO
-	but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
-	and http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-controllers
+TODO
+but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
+and http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-controllers
 
 ## Backend
 
