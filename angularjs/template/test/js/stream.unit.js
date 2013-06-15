@@ -17,8 +17,6 @@ describe("Custom directive 'dateTimePicker':", function() {
 
 
     it("to work correctly", function() {
-
-
         var a = 12;
         var b = a;
         expect(a).toBe(b);

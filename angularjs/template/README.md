@@ -137,6 +137,10 @@ ___________________
 
 ### From mock template to live application
 
+-1. First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
+
+		python -m SimpleHTTPServer 8000
+
 0. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
 
 	init the app with data-ng-app="stream"
@@ -255,6 +259,7 @@ ___________________
 
     Lets define 2 routes now: the stream page and the about page:
 
+```javascript
     	streamApp.config(function ($routeProvider) {
            $routeProvider
                .when('/',
@@ -269,9 +274,11 @@ ___________________
                     })
                .otherwise({ redirectTo: '/'});
         });
+```
 
    	Or even better:
 
+```javascript
         	var controllers = {};
 
             controllers.StreamController = function ($scope) { ... }
@@ -279,6 +286,7 @@ ___________________
             controllers.AboutController = function ($scope) { ... }
 
             streamApp.controller(controllers);
+```
 
 	Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
 
@@ -294,6 +302,7 @@ ___________________
 
 	Since we have a single tag select as filter now refactor to a multiple select:
 
+```javascript
 			streamApp.filter("tagsFilter", function() {
                 return function (events, eventFilter) {
                     var out = [];
@@ -311,6 +320,7 @@ ___________________
                     return $.unique(out);
                 };
             });
+```
 
     Let's plug in the filter:
 
@@ -330,6 +340,7 @@ ___________________
 
 	Now we can create the controller createEvent() function, so add this into the StreamController:
 
+```javascript
 		$scope.createEvent = function() {
 			$scope.events.push(
 				{   occurrence: $scope.newEvent.occurrence,
@@ -342,6 +353,7 @@ ___________________
 				}
 			);
 		};
+```
 
 	Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
 	input for "outside" changes, because it expects the value to only change if (a) the user changes it, or (b) it's changed by the controller.
@@ -362,6 +374,7 @@ ___________________
 
 	Create new directive:
 
+```javascript
 			streamApp.directive('dateTimePicker', function(){
                 return {
                     restrict: 'E',
@@ -391,6 +404,7 @@ ___________________
                     }
                 }
             });
+```
 
 	TODO: do creation of the comments in angularjs...
 
@@ -453,3 +467,91 @@ ___________________
 	TODO
 	but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
 	and http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html#testing-controllers
+
+## Backend
+
+### Hooking up the backend into AngularJS
+
+	First off you'd want to know about callback functions in Javascript because that might come a handy when talking
+	factories, services and all that.
+	It so happens that in Javascript a function is an object so it makes sense to do this:
+
+```javascript
+		// define our function with the callback argument
+		function someFunction(arg1, arg2, callback) {
+			// this generates a random number between arg1 and arg2
+			var myNumber = Math.ceil(Math.random() * (arg1 - arg2) + arg2);
+			// then we're done, so we'll call the callback and pass our result
+			callback(myNumber);
+		}
+		// call the function
+		someFunction(5, 15, function(num) {
+			// this anonymous function will run when the callback is called
+			console.log("callback called! " + num);
+		});
+```
+
+	Javascript gives us an option to do things a bit differently. Rather than wait around for a function to finish
+	by returning a value, we can use callbacks to do it asynchronously. This is useful for things that take a while
+	to finish, like making an AJAX request, because we aren’t holding up the browser. This is sometimes referred to
+	as "Continuation Passing Style" programming.
+	A very bad side-effect of this structure is that you can get something called "The pyramid of Doom". Take a look
+	at this piece of code (which could potentially result in an endless anonymous function callback-stack, not very
+	readable indeed but all called asynchronously):
+
+```javascript
+		range.on("preheat", function() {
+            pot.on("boil", function() {
+                rice.on("cooked", function() {
+                    dinner.serve(rice);
+                });
+            });
+        });
+```
+
+	To refactor these structures let alone to handle errors in them is a pain in the *.
+
+    Instead we can circumvent these structures in AngularJS like this. Let's say we have 2 functions that we
+    would like to call but one after the other and both take a considerate amount of time (those freakin' slow
+    backends...). Very importantly the output of the first function must be processed in the second one.
+
+```javascript
+		var firstFunction = function(param) {
+			// do something with param
+			return 'firstResult';
+		};
+
+		var secondFunction = function(param) {
+			// do something with param
+			return 'secondResult';
+		};
+
+		// ultimately we want to call them one after the other
+		// But this code sucks cuz it blocks the further execution of the program
+        secondFn(firstFn());
+```
+
+	Here's how to do this the proper way in AngularJS:
+
+```javascript
+		// first we create a new 'deferred' object, which represents a chain of operations
+		var deferred = $q.defer();
+		// the 'promise' property represents the eventual result of the chain
+		var promise = deferred.promise;
+		// the 'then' method adds a step to the chain and then returns a new promise representing
+		// the eventual result of the extended chain
+		// you can add as many steps as you like
+		promise = promise.then(firstFunction).then(secondFunction);
+		// so far, we have set up our chain of functions, but nothing has actually happened
+		// you get things started by calling deferred.resolve,
+		// specifying the initial value you want to pass to the first actual step in the chain
+		deferred.resolve('initial value');
+		// and then...still nothing happens
+		// to ensure that model changes are properly observed, Angular doesn't actually call the first step
+		// in the chain until the next time $apply is called
+		$rootScope.$apply();
+		// or replace the last two lines with:
+		$rootScope.$apply(function() {
+			deferred.resolve('initial value');
+		});
+```

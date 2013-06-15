@@ -1,8 +1,37 @@
 var streamApp = angular.module('streamApp', []);
 
+function createPromise(command, $q) {
+    var deferred = $q.defer();
+    // we resolve or reject in the future, just like a "slow" backend
+    setTimeout(function() {
+        if (command == 'cooked') {
+            deferred.resolve('Diner is served!');
+        } else {
+            deferred.reject('Pot of rice on the floor, bummer!');
+        }
+    }, 2000);
+    return deferred.promise;
+}
+
+streamApp.factory('cookFactory', ['$q', function($q) {
+    return {
+        doYourThing : function(input) {
+            var promise = createPromise(input, $q);
+            promise.then(function(result) {
+                return result;
+            }, function(result) {
+                return result +  " -> Let's clean up the floor";
+            }).then(function(result) {
+                console.log("last stop " + result);
+            });
+        }
+    }
+}]);
+
+
 var controllers = {};
 
-controllers.StreamController = function ($scope) {
+controllers.StreamController = function ($scope, cookFactory) {
 
     $scope.events = [
         {
@@ -95,6 +124,7 @@ controllers.StreamController = function ($scope) {
 
     $scope.clearFilter = function(){
         $scope.eventFilter = {};
+        cookFactory.doYourThing('not cooked');
     };
 
     $scope.createEvent = function() {
@@ -187,4 +217,10 @@ streamApp.directive('dateTimePicker', function(){
         }
     }
 });
+
+
+
+
+
+
 
