@@ -15,7 +15,10 @@ files = [
     'js/vendor/bootstrap-datetimepicker.min.js',
     'js/vendor/moment.min.js',
     'js/vendor/angular.min.js',
-    'js/stream.js',
+    'js/filters.js',
+    'js/directives.js',
+    'js/services.js',
+    'js/app.js',
     '../test/js/vendor/angular-mocks.js',
     '../test/js/*.unit.js',
     'partial/datetimepicker.html'
@@ -24,7 +27,6 @@ files = [
 preprocessors = {
     'partial/datetimepicker.html': 'html2js'
 }
-
 
 // list of files to exclude
 exclude = [
