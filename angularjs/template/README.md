@@ -476,9 +476,9 @@ streamApp.directive('dateTimePicker', function(){
 
 ### Hooking up the backend into AngularJS
 
-	First off you'd want to know about callback functions in Javascript because that might come a handy when talking
-	factories, services and all that.
-	It so happens that in Javascript a function is an object so it makes sense to do this:
+First off you'd want to know about callback functions in Javascript because that might come a handy when talking
+factories, services and all that.
+It so happens that in Javascript a function is an object so it makes sense to do this:
 
 ```javascript
 // define our function with the callback argument
@@ -495,13 +495,13 @@ someFunction(5, 15, function(num) {
 });
 ```
 
-	Javascript gives us an option to do things a bit differently. Rather than wait around for a function to finish
-	by returning a value, we can use callbacks to do it asynchronously. This is useful for things that take a while
-	to finish, like making an AJAX request, because we aren’t holding up the browser. This is sometimes referred to
-	as "Continuation Passing Style" programming.
-	A very bad side-effect of this structure is that you can get something called "The pyramid of Doom". Take a look
-	at this piece of code (which could potentially result in an endless anonymous function callback-stack, not very
-	readable indeed but all called asynchronously):
+Javascript gives us an option to do things a bit differently. Rather than wait around for a function to finish
+by returning a value, we can use callbacks to do it asynchronously. This is useful for things that take a while
+to finish, like making an AJAX request, because we aren’t holding up the browser. This is sometimes referred to
+as "Continuation Passing Style" programming.
+A very bad side-effect of this structure is that you can get something called "The pyramid of Doom". Take a look
+at this piece of code (which could potentially result in an endless anonymous function callback-stack, not very
+readable indeed but all called asynchronously):
 
 ```javascript
 range.on("preheat", function() {
@@ -513,11 +513,11 @@ range.on("preheat", function() {
 });
 ```
 
-	To refactor these structures let alone to handle errors in them is a pain in the *.
+To refactor these structures let alone to handle errors in them is a pain in the *.
 
-    Instead we can circumvent these structures in AngularJS like this. Let's say we have 2 functions that we
-    would like to call but one after the other and both take a considerate amount of time (those freakin' slow
-    backends...). Very importantly the output of the first function must be processed in the second one.
+Instead we can circumvent these structures in AngularJS like this. Let's say we have 2 functions that we
+would like to call but one after the other and both take a considerate amount of time (those freakin' slow
+backends...). Very importantly the output of the first function must be processed in the second one.
 
 ```javascript
 var firstFunction = function(param) {
@@ -535,7 +535,7 @@ var secondFunction = function(param) {
 secondFn(firstFn());
 ```
 
-	Here's how to do this the proper way in AngularJS:
+Here's how to do this the proper way in AngularJS:
 
 ```javascript
 // first we create a new 'deferred' object, which represents a chain of operations
