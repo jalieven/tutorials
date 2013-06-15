@@ -137,13 +137,13 @@ ___________________
 
 ### From mock template to live application
 
--1. First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
+1. First lets make sure we serve the static application via a web server in stead of file:// protocol (which is problematic in Chrome). Go to the directory where the index.html is:
 
 		python -m SimpleHTTPServer 8000
 
-0. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
+2. Init the application with the "data-ng-app"-directive and show the bi-directional data-binding, a simple "data-ng-repeat" and "data-ng-init" along with a filter.
 
-	init the app with data-ng-app="stream"
+	Here's the data-model:
 
 		data-ng-init="events=[{
                             _id: '1',
@@ -227,65 +227,71 @@ ___________________
                         }
                     ]"
 
-		data-ng-repeat="event in events" (and binding moustaches for the well-divs!)
+	data-ng-repeat="event in events" (and binding moustaches for the well-divs!)
 
-		search for <select id="filter-tags">:
+	search for <select id="filter-tags">:
 
-			add data-ng-model="eventFilter.tags" attribute
-			and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
-			now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
-			actually we want a user-friendly date filter so do this:
+	add data-ng-model="eventFilter.tags" attribute
+	and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
+	now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
+	actually we want a user-friendly date filter so do this:
 
-			angular.module('streamApp').
-              	filter('fromNow', function() {
-                	return function(dateString) {
-                  		return moment(new Date(dateString)).fromNow()
-                	};
-              	});
+```javascript
+angular.module('streamApp').
+filter('fromNow', function() {
+	return function(dateString) {
+		return moment(new Date(dateString)).fromNow()
+	};
+});
+```
 
-            now use "| fromNow" as a filter.
+	now use "| fromNow" as a filter.
 
-1. Create a Module and modularize the application with routes, controllers and everything.
+3. Create a Module and modularize the application with routes, controllers and everything.
 
 	Start with the configuration of the app and explain the "dependency injection" syntax:
 
-		var streamApp = angular.module('streamApp', []);
+```javascript
+var streamApp = angular.module('streamApp', []);
+```
 
 	Now for the less recommended way of creating a Controller (so cut away the "data-ng-init" from earlier):
 
-		streamApp.controller('StreamController', function($scope) {
-            $scope.events = [{ /* copy JSON dict from earlier */ }];
-        });
+```javascript
+streamApp.controller('StreamController', function($scope) {
+	$scope.events = [{ /* copy JSON dict from earlier */ }];
+});
+```
 
     Lets define 2 routes now: the stream page and the about page:
 
 ```javascript
-    	streamApp.config(function ($routeProvider) {
-           $routeProvider
-               .when('/',
-                    {
-                        controller: 'StreamController',
-                        templateUrl: 'stream.html'
-                    })
-               .when('/about',
-                    {
-                        controller: 'AboutController',
-                        templateUrl: 'about.html'
-                    })
-               .otherwise({ redirectTo: '/'});
-        });
+streamApp.config(function ($routeProvider) {
+   $routeProvider
+	   .when('/',
+			{
+				controller: 'StreamController',
+				templateUrl: 'stream.html'
+			})
+	   .when('/about',
+			{
+				controller: 'AboutController',
+				templateUrl: 'about.html'
+			})
+	   .otherwise({ redirectTo: '/'});
+});
 ```
 
    	Or even better:
 
 ```javascript
-        	var controllers = {};
+var controllers = {};
 
-            controllers.StreamController = function ($scope) { ... }
+controllers.StreamController = function ($scope) { ... }
 
-            controllers.AboutController = function ($scope) { ... }
+controllers.AboutController = function ($scope) { ... }
 
-            streamApp.controller(controllers);
+streamApp.controller(controllers);
 ```
 
 	Now break up the view with an "data-ng-view" to make a template out of the "stream" page and also the "about" page.
@@ -303,56 +309,58 @@ ___________________
 	Since we have a single tag select as filter now refactor to a multiple select:
 
 ```javascript
-			streamApp.filter("tagsFilter", function() {
-                return function (events, eventFilter) {
-                    var out = [];
-                    if (eventFilter && eventFilter.tags) {
-                        angular.forEach(events, function (event) {
-                            for (var i = 0; i < event.tags.length; i++) {
-                                if($.inArray(event.tags[i], eventFilter.tags) != -1) {
-                                    out.push(event);
-                                }
-                            }
-                        })
-                    } else {
-                        out = events;
-                    }
-                    return $.unique(out);
-                };
-            });
+streamApp.filter("tagsFilter", function() {
+	return function (events, eventFilter) {
+		var out = [];
+		if (eventFilter && eventFilter.tags) {
+			angular.forEach(events, function (event) {
+				for (var i = 0; i < event.tags.length; i++) {
+					if($.inArray(event.tags[i], eventFilter.tags) != -1) {
+						out.push(event);
+					}
+				}
+			})
+		} else {
+			out = events;
+		}
+		return $.unique(out);
+	};
+});
 ```
 
     Let's plug in the filter:
 
-    		<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
+    	<div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter ...
 
 	Now lets fix the clear button:
 
-			$scope.clearFilter = function(){
-			  	$scope.eventFilter = {};
-			};
+```javascript
+$scope.clearFilter = function(){
+	$scope.eventFilter = {};
+};
+```
 
-			<input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
+		<input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
 
-3. Now that we can view and filter the stream we can now work on the event-creation use-case.
+4. Now that we can view and filter the stream we can now work on the event-creation use-case.
 
 	First put all the data-ng-model="newEvent.###" directives into the create-form and ultimately data-ng-click="createEvent()" onto the "Create"-btn.
 
 	Now we can create the controller createEvent() function, so add this into the StreamController:
 
 ```javascript
-		$scope.createEvent = function() {
-			$scope.events.push(
-				{   occurrence: $scope.newEvent.occurrence,
-					instigators: $scope.newEvent.instigators,
-					judgement: $scope.newEvent.judgement,
-					tags: $scope.newEvent.tags,
-					link: $scope.newEvent.link,
-					message: $scope.newEvent.message,
-					comments:[]
-				}
-			);
-		};
+$scope.createEvent = function() {
+	$scope.events.push(
+		{   occurrence: $scope.newEvent.occurrence,
+			instigators: $scope.newEvent.instigators,
+			judgement: $scope.newEvent.judgement,
+			tags: $scope.newEvent.tags,
+			link: $scope.newEvent.link,
+			message: $scope.newEvent.message,
+			comments:[]
+		}
+	);
+};
 ```
 
 	Now if we select a date-time we see that the value doesn't get binded. As it turns out Angular isn't observing the
@@ -372,47 +380,43 @@ ___________________
                 <span class="add-on"><em class="icon-th"></em></span>
             </div>
 
-	Create new directive:
+	Create a new "date picking" directive:
 
 ```javascript
-			streamApp.directive('dateTimePicker', function(){
-                return {
-                    restrict: 'E',
-                    replace: true,
-                    require: '?ngModel',
-                    templateUrl: 'partial/datetimepicker.html',
-                    link: function(scope, element, attrs, ngModel){
-                        var input = element.find('input');
+streamApp.directive('dateTimePicker', function(){
+	return {
+		restrict: 'E',
+		replace: true,
+		require: '?ngModel',
+		templateUrl: 'partial/datetimepicker.html',
+		link: function(scope, element, attrs, ngModel){
+			var input = element.find('input');
 
-                        element.datetimepicker({
-                            format: "yyyy/mm/dd hh:ii:ss",
-                            pickerPosition: 'bottom-left',
-                            autoclose: true,
-                            todayBtn: true
-                        })
+			element.datetimepicker({
+				format: "yyyy/mm/dd hh:ii:ss",
+				pickerPosition: 'bottom-left',
+				autoclose: true,
+				todayBtn: true
+			})
 
-                        element.bind('blur keyup change', function() {
-                            scope.$apply(read);
-                        });
+			element.bind('blur keyup change', function() {
+				scope.$apply(read);
+			});
 
-                        read(); // initialize
+			read(); // initialize
 
-                        // Write data to the model
-                        function read() {
-                            ngModel.$setViewValue(input.val());
-                        }
-                    }
-                }
-            });
+			// Write data to the model
+			function read() {
+				ngModel.$setViewValue(input.val());
+			}
+		}
+	}
+});
 ```
 
 	TODO: do creation of the comments in angularjs...
 
-4. Create an custom directive for the "event-well" which is used all over the place.
-
-	TODO
-
-5. Tie in the backend with a Service (and BreezeJS).
+5. Create an custom directive for the "event-well" which is used all over the place.
 
 	TODO
 
@@ -462,7 +466,7 @@ ___________________
 	are accessible.
 
 	Now when you write tests for JavaScript in folder "test/js" and you change/save anything in "../static/js" that is tested
-	then those tests will be run automagically.
+	then those tests will be run auto-magically.
 
 	TODO
 	but first see: http://www.youtube.com/watch?v=APyRKfxHLgU
@@ -477,18 +481,18 @@ ___________________
 	It so happens that in Javascript a function is an object so it makes sense to do this:
 
 ```javascript
-		// define our function with the callback argument
-		function someFunction(arg1, arg2, callback) {
-			// this generates a random number between arg1 and arg2
-			var myNumber = Math.ceil(Math.random() * (arg1 - arg2) + arg2);
-			// then we're done, so we'll call the callback and pass our result
-			callback(myNumber);
-		}
-		// call the function
-		someFunction(5, 15, function(num) {
-			// this anonymous function will run when the callback is called
-			console.log("callback called! " + num);
-		});
+// define our function with the callback argument
+function someFunction(arg1, arg2, callback) {
+	// this generates a random number between arg1 and arg2
+	var myNumber = Math.ceil(Math.random() * (arg1 - arg2) + arg2);
+	// then we're done, so we'll call the callback and pass our result
+	callback(myNumber);
+}
+// call the function
+someFunction(5, 15, function(num) {
+	// this anonymous function will run when the callback is called
+	console.log("callback called! " + num);
+});
 ```
 
 	Javascript gives us an option to do things a bit differently. Rather than wait around for a function to finish
@@ -500,13 +504,13 @@ ___________________
 	readable indeed but all called asynchronously):
 
 ```javascript
-		range.on("preheat", function() {
-            pot.on("boil", function() {
-                rice.on("cooked", function() {
-                    dinner.serve(rice);
-                });
-            });
-        });
+range.on("preheat", function() {
+	pot.on("boil", function() {
+		rice.on("cooked", function() {
+			dinner.serve(rice);
+		});
+	});
+});
 ```
 
 	To refactor these structures let alone to handle errors in them is a pain in the *.
@@ -516,42 +520,42 @@ ___________________
     backends...). Very importantly the output of the first function must be processed in the second one.
 
 ```javascript
-		var firstFunction = function(param) {
-			// do something with param
-			return 'firstResult';
-		};
+var firstFunction = function(param) {
+	// do something with param
+	return 'firstResult';
+};
 
-		var secondFunction = function(param) {
-			// do something with param
-			return 'secondResult';
-		};
+var secondFunction = function(param) {
+	// do something with param
+	return 'secondResult';
+};
 
-		// ultimately we want to call them one after the other
-		// But this code sucks cuz it blocks the further execution of the program
-        secondFn(firstFn());
+// ultimately we want to call them one after the other
+// But this code sucks cuz it blocks the further execution of the program
+secondFn(firstFn());
 ```
 
 	Here's how to do this the proper way in AngularJS:
 
 ```javascript
-		// first we create a new 'deferred' object, which represents a chain of operations
-		var deferred = $q.defer();
-		// the 'promise' property represents the eventual result of the chain
-		var promise = deferred.promise;
-		// the 'then' method adds a step to the chain and then returns a new promise representing
-		// the eventual result of the extended chain
-		// you can add as many steps as you like
-		promise = promise.then(firstFunction).then(secondFunction);
-		// so far, we have set up our chain of functions, but nothing has actually happened
-		// you get things started by calling deferred.resolve,
-		// specifying the initial value you want to pass to the first actual step in the chain
-		deferred.resolve('initial value');
-		// and then...still nothing happens
-		// to ensure that model changes are properly observed, Angular doesn't actually call the first step
-		// in the chain until the next time $apply is called
-		$rootScope.$apply();
-		// or replace the last two lines with:
-		$rootScope.$apply(function() {
-			deferred.resolve('initial value');
-		});
+// first we create a new 'deferred' object, which represents a chain of operations
+var deferred = $q.defer();
+// the 'promise' property represents the eventual result of the chain
+var promise = deferred.promise;
+// the 'then' method adds a step to the chain and then returns a new promise representing
+// the eventual result of the extended chain
+// you can add as many steps as you like
+promise = promise.then(firstFunction).then(secondFunction);
+// so far, we have set up our chain of functions, but nothing has actually happened
+// you get things started by calling deferred.resolve,
+// specifying the initial value you want to pass to the first actual step in the chain
+deferred.resolve('initial value');
+// and then...still nothing happens
+// to ensure that model changes are properly observed, Angular doesn't actually call the first step
+// in the chain until the next time $apply is called
+$rootScope.$apply();
+// or replace the last two lines with:
+$rootScope.$apply(function() {
+	deferred.resolve('initial value');
+});
 ```
