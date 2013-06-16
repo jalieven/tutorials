@@ -22,3 +22,14 @@ services.factory('EventsLoader', ['Event', '$q', function(Event, $q) {
         return delay.promise;
     };
 }]);
+
+services.factory('EventLoader', ['Event', '$route', '$q', function(Event, $route, $q) {
+    return function() {
+        var delay = $q.defer();
+        Event.get({id: $route.current.params.recipeId}, function(event) {
+            delay.resolve(event);
+            delay.reject('Unable to fetch event ' + $route.current.params.recipeId);
+        });
+        return delay.promise;
+    };
+}]);

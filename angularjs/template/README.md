@@ -352,6 +352,19 @@ $scope.clearFilter = function(){
 <input class="btn btn-danger" style="clear: left; width: 100%; " type="reset" value="Clear" data-ng-click="clearFilter()" />
 ```
 
+```javascript
+$(function () {
+
+	// Setup drop down menu
+	$('.dropdown-toggle').dropdown();
+
+	// Fix input element click problem
+	$('.dropdown-menu input, .dropdown-menu select, .dropdown-menu label').click(function(e) {
+		e.stopPropagation();
+	});
+});
+```
+
 #### Create an Event Use Case
 
 Now that we can view and filter the stream we can now work on the event-creation use-case.
@@ -386,17 +399,17 @@ To fix this we need to:
 <date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
 ```
 
-Make a new partial:
+So make a new partial with the html placeholder code so that the datetimepicker library can modify this:
 
 ```html
 <div class="control-group input-append date datetime">
-	<input type="text" name="datetime" ng-model="ngModel" required>
+	<input type="text" name="datetime" ng-model="ngModel">
 	<span class="add-on"><em class="icon-remove"></em></span>
 	<span class="add-on"><em class="icon-th"></em></span>
 </div>
 ```
 
-Create a new "date picking" directive:
+Create a new "date picking" custom directive:
 
 ```javascript
 streamApp.directive('dateTimePicker', function(){
@@ -406,15 +419,20 @@ streamApp.directive('dateTimePicker', function(){
 		require: '?ngModel',
 		templateUrl: 'partial/datetimepicker.html',
 		link: function(scope, element, attrs, ngModel){
+			// this piece of code will make sure what comes out of
+			// the Javascript library is 'seen' by AngularJS
 			var input = element.find('input');
 
+			// here we setup the datetimepicker library
 			element.datetimepicker({
 				format: "yyyy/mm/dd hh:ii:ss",
 				pickerPosition: 'bottom-left',
 				autoclose: true,
 				todayBtn: true
-			})
+			});
 
+			// here we make sure when the user interacts
+			// with the datetimepicker the ngModel gets updated!
 			element.bind('blur keyup change', function() {
 				scope.$apply(read);
 			});
@@ -430,18 +448,52 @@ streamApp.directive('dateTimePicker', function(){
 });
 ```
 
-TODO: do creation of the comments in angularjs...
+TODO: do creation of the comments in angularjs use case...
 
-#### Yet another custom directive
+#### Validation
 
-Create an custom directive for the "event-well" which is used all over the place.
+The other directive that we want to cover in some depth here is the form validation controls and more specifically
+the controls for the "create new event" form.
+It is easy enough in the AngularJS world to set a particular form field “as required.”
+Simply add the required tag to the input. But now what do you do with it?
 
-TODO
+For that, we jump down to the Save button. Put a "data-ng-disabled" directive on
+it, which says "newEventForm.$invalid". The newEventForm is the name of the form
+which we have declared. AngularJS adds some special variables to it ($valid and $invalid being just two)
+that allow you to control the form elements. AngularJS looks at all the required elements and updates
+these special variables accordingly. So if our Event message is empty, recipeForm.$invalid gets set to true
+(and $valid to false), and our Save button is instantly disabled.
 
-#### I18n
+Correctly set the name-attributes of the input in the newEventForm and in the modal-header of the create event modal:
 
-TODO
-but first understand: http://codingsmackdown.tv/blog/2012/12/14/localizing-your-angularjs-app/
+```html
+<br/>
+
+<div class="error alert" ng-show="newEventForm.message.$error.minlength">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<strong>Warning!</strong> Message too short (should be at least 3 characters)!
+</div>
+
+<div class="error alert" ng-show="newEventForm.message.$error.maxlength">
+	<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<strong>Warning!</strong> Message too long (should be maximum 280 characters)!
+</div>
+```
+
+And now add some validation directives on the message input:
+
+```html
+<textarea name="message" id="create-message" class="input-large" placeholder="Message..."
+    data-ng-model="newEvent.message" data-ng-minlength="3" data-ng-maxlength="280" required></textarea>
+```
+
+And on the "Create" button do this ("data-ng-disabled" is important here):
+
+```html
+<button class="btn btn-danger" data-dismiss="modal" data-ng-disabled="newEventForm.$invalid" data-ng-click="createEvent()">Create</button>
+```
+
+Ofcuz it is better to put this stuff in AngularJS custom directive.
 
 #### Testing
 
@@ -739,12 +791,31 @@ Here's overview on how you can RESTfully call the MongoLab collections:
 			   (by default, only one is updated)
 			u: insert if none match the query (upsert)
 
-### Last refactor
+Now we want to make sure our create event use case hooks up with our MongoLab backend. This is very easy with the
+resource api (mind the injected "Event" object).
+
+```javascript
+controllers.StreamController = function ($scope, events, Event) {
+    ...
+    $scope.createEvent = function() {
+        // wrap the non resource object into a resource object
+        $scope.newEvent = new Event($scope.newEvent);
+        // then call save on that object and when saved add it to the list
+        $scope.newEvent.$save(function(savedEvent) {
+			// we have to push cuz we don't want to load it back from the backend
+			// we just got the saved entity (with _id and all) from the backend
+            $scope.events.push(savedEvent);
+        });
+    };
+}
+```
+
+### Last splitup refactor
 
 Now for the last part we split up the stream.js file into multiple module files like so:
 
 1. filters.js > filters "fromNow" and "tagsFilter"
-2. directives.js > directives "dateTimePicker" and "eventWell"
+2. directives.js > directives "dateTimePicker"
 3. services.js > all the factories to do operations on
 4. app.js > controllers and config with all the other modules injected
 

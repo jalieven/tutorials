@@ -55,12 +55,10 @@
     <br />
     <br />
 
-
     <div class="well" data-ng-repeat="event in events | tagsFilter:eventFilter | orderBy: 'occurrence':true">
         <p>
             <span class="badge">{{event.occurrence | fromNow}}</span>
         </p>
-
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span6">
@@ -68,7 +66,7 @@
                         <strong>Message:</strong>
                         {{event.message}}
                     </p>
-                    <p>
+                    <p data-ng-hide="!event.link">
                         <strong>Link:</strong>
                         <a href="{{event.link}}" target="_blank">{{event.link}}</a>
                     </p>
@@ -85,7 +83,8 @@
                 </div>
                 <div class="span2">
                     <p>
-                        <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small">Comments: 3</a>
+                        <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small"
+                           data-ng-click="selectEvent(event._id.$oid)">Comments: {{event.comments.length}}</a>
                     </p>
                 </div>
             </div>
@@ -97,9 +96,22 @@
         <div class="modal-header">
             <button class="close" data-dismiss="modal">X</button>
             <h3>Create an event</h3>
+
+            <br/>
+
+            <div class="error alert" ng-show="newEventForm.message.$error.minlength">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Warning!</strong> Message too short (should be at least 3 characters)!
+            </div>
+
+            <div class="error alert" ng-show="newEventForm.message.$error.maxlength">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Warning!</strong> Message too long (should be maximum 280 characters)!
+            </div>
+
         </div>
         <div class="modal-body">
-            <form class="form-horizontal well">
+            <form name="newEventForm" class="form-horizontal well">
                 <div class="control-group">
                     <label class="control-label">Occurrence</label>
                     <div class="controls">
@@ -172,8 +184,8 @@
                 <div class="control-group">
                     <label class="control-label" for="create-message">Message</label>
                     <div class="controls">
-                        <textarea id="create-message" class="input-large" placeholder="Message..."
-                                  data-ng-model="newEvent.message"></textarea>
+                        <textarea name="message" id="create-message" class="input-large" placeholder="Message..."
+                                  data-ng-model="newEvent.message" data-ng-minlength="3" data-ng-maxlength="280" required></textarea>
                     </div>
                 </div>
 
@@ -210,7 +222,9 @@
             </form>
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn btn-danger" data-dismiss="modal" data-ng-click="createEvent()">Create</a>
+            <div class="form-actions">
+                <button class="btn btn-danger" data-dismiss="modal" data-ng-disabled="newEventForm.$invalid" data-ng-click="createEvent()">Create</button>
+            </div>
         </div>
     </div>
 
@@ -227,11 +241,7 @@
                     <label class="control-label" for="search-from-datetimepicker">From</label>
                     <div class="controls">
                         <div id="search-from-datetimepicker" class="input-append date">
-                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
-                                <span class="add-on">
-                                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-                                  </i>
-                                </span>
+                            <date-time-picker ng-model="searchEvent.fromOccurrence"></date-time-picker>
                         </div>
                     </div>
                 </div>
@@ -240,11 +250,7 @@
                     <label class="control-label" for="search-to-datetimepicker">To</label>
                     <div class="controls">
                         <div id="search-to-datetimepicker" class="input-append date">
-                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
-                                <span class="add-on">
-                                  <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-                                  </i>
-                                </span>
+                            <date-time-picker ng-model="searchEvent.toOccurrence"></date-time-picker>
                         </div>
                     </div>
                 </div>
@@ -331,21 +337,12 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr data-ng-repeat="comment in commentEvent.comments">
                     <td width="140px">2013/06/08 18:10:16</td>
                     <td>jalie</td>
-                    <td>Nicely done. Would be cool with fries.</td>
+                    <td>{{comment}}</td>
                 </tr>
-                <tr>
-                    <td width="140px">2013/06/08 18:18:16</td>
-                    <td>jacob</td>
-                    <td>What about mayo?</td>
-                </tr>
-                <tr>
-                    <td width="140px">2013/06/08 18:18:16</td>
-                    <td>benh</td>
-                    <td>I want a "balleken"... and I want this comment to be very long so I will talk a bit more... Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
-                </tr>
+
                 </tbody>
             </table>
 
@@ -354,29 +351,18 @@
                     <label class="control-label" for="create-comment">Message</label>
 
                     <div class="controls">
-                        <textarea id="create-comment" class="input-xlarge" placeholder="Comment..."></textarea>
+                        <textarea id="create-comment" class="input-xlarge" placeholder="Comment..." data-ng-model="commentEvent.newComment"></textarea>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <a href="#" class="btn btn-danger" data-dismiss="modal">Comment</a>
+            <a href="#" class="btn btn-danger" data-dismiss="modal" data-ng-click="addComment()">Comment</a>
         </div>
     </div>
 
     <script type="text/javascript">
         $(function () {
-
-//            $('#create-occurrence-datetimepicker').datetimepicker({
-//                format: 'yyyy/MM/dd hh:mm:ss'
-//            });
-            $('#search-from-datetimepicker').datetimepicker({
-                format: 'yyyy/MM/dd hh:mm:ss'
-            });
-            $('#search-to-datetimepicker').datetimepicker({
-                format: 'yyyy/MM/dd hh:mm:ss'
-            });
-
             // Setup drop down menu
             $('.dropdown-toggle').dropdown();
 
