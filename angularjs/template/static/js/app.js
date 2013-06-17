@@ -10,13 +10,6 @@ controllers.StreamController = function ($scope, events, Event) {
         $scope.eventFilter = {};
     };
 
-    $scope.createEvent = function() {
-        $scope.newEvent = new Event($scope.newEvent);
-        $scope.newEvent.$save(function(savedEvent) {
-            $scope.events.push(savedEvent);
-        });
-    };
-
     $scope.selectEvent = function(id) {
         angular.forEach($scope.events, function(event) {
             if(event._id.$oid == id) {
@@ -35,11 +28,22 @@ controllers.StreamController = function ($scope, events, Event) {
         });
     }
 
-}
+};
+
+controllers.NewController = function($scope, $location, Event) {
+
+    $scope.createEvent = function() {
+        $scope.newEvent = new Event($scope.newEvent);
+        $scope.newEvent.$save(function(savedEvent) {
+            $location.path('/');
+        });
+    };
+
+};
 
 controllers.AboutController = function ($scope) {
     // TODO
-}
+};
 
 streamApp.controller(controllers);
 
@@ -54,6 +58,11 @@ streamApp.config(function ($routeProvider) {
                     return EventsLoader();
                 }
             }
+        })
+        .when('/new',
+        {
+            controller: 'NewController',
+            templateUrl: 'partial/new.html'
         })
         .when('/about',
         {

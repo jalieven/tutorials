@@ -1,0 +1,128 @@
+<div id="createEvent">
+    <button class="close" data-dismiss="modal">X</button>
+    <h3>Create an event</h3>
+
+    <br/>
+
+    <div class="error alert" ng-show="newEventForm.message.$error.minlength">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Warning!</strong> Message too short (should be at least 3 characters)!
+    </div>
+
+    <div class="error alert" ng-show="newEventForm.message.$error.maxlength">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Warning!</strong> Message too long (should be maximum 280 characters)!
+    </div>
+
+    <form name="newEventForm" class="form-horizontal well">
+        <div class="control-group">
+            <label class="control-label">Occurrence</label>
+            <div class="controls">
+                <date-time-picker ng-model="newEvent.occurrence"></date-time-picker>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-instigators">Instigators</label>
+            <div class="controls">
+                <select id="create-instigators" multiple="multiple"
+                        class="input-large" size="2" data-ng-model="newEvent.instigators">
+                    <option value="jalie">jalie</option>
+                    <option value="tiroo">tiroo</option>
+                    <option value="gertdw">gertdw</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-judgement">Judgement</label>
+            <div class="controls">
+                <select id="create-judgement" multiple="multiple" class="input-large"
+                        size="2" data-ng-model="newEvent.judgement">
+                    <option value="ALARMING">Alarming</option>
+                    <option value="DETERIORATING">Deteriorating</option>
+                    <option value="FAIL">Fail</option>
+                    <option value="FUNNY">Funny</option>
+                    <option value="GRAVE">Grave</option>
+                    <option value="HEROLIKE">Herolike</option>
+                    <option value="IMPROVING">Improving</option>
+                    <option value="INDIFFERENT">Indifferent</option>
+                    <option value="INFORMATIVE">Informative</option>
+                    <option value="PALM_FACE">Palm/Face</option>
+                    <option value="SHAMEFUL">Shameful</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-tags">Tags</label>
+            <div class="controls">
+                <select id="create-tags" multiple="multiple" class="input-large"
+                        size="2" data-ng-model="newEvent.tags">
+                    <option value="ABSENCE">Absence</option>
+                    <option value="BAMBOO">Bamboo</option>
+                    <option value="COMMIT-AND-RUN">Commit And Run</option>
+                    <option value="COMPLIANCE">Compliance</option>
+                    <option value="COMPLAINT">Complaint</option>
+                    <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                    <option value="HACK">Hack</option>
+                    <option value="HELP-REQUEST">Help Request</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                    <option value="NEXUS">Nexus</option>
+                    <option value="PRAISE">Praise</option>
+                    <option value="QUIBBLE">Quibble</option>
+                    <option value="QUIP">Quip</option>
+                    <option value="REDEPLOYMENT">Redeployment</option>
+                    <option value="SERVER-RESTART">Server Restart</option>
+                    <option value="SONAR">Sonar</option>
+                    <option value="TECHNICAL-QUESTION">Technical Question</option>
+                    <option value="TODO">Todo</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-link">Link</label>
+            <div class="controls">
+                <input id="create-link" type="url" placeholder="URL" class="input-large"
+                       data-ng-model="newEvent.link">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-message">Message</label>
+            <div class="controls">
+                <textarea name="message" id="create-message" class="input-large" placeholder="Message..."
+                          data-ng-model="newEvent.message" data-ng-minlength="3" data-ng-maxlength="280" required></textarea>
+            </div>
+        </div>
+
+        <div class="well">
+            <p data-ng-hide="!newEvent.occurrence">
+                <span class="badge">{{newEvent.occurrence | fromNow}}</span>
+            </p>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span6">
+                        <p data-ng-hide="!newEvent.message">
+                            <strong>Message:</strong>
+                            {{newEvent.message}}
+                        </p>
+                        <p data-ng-hide="!newEvent.link">
+                            <strong>Link:</strong>
+                            {{newEvent.link}}
+                        </p>
+                    </div>
+                    <div class="span6">
+                        <ul class="inline labeling" data-ng-hide="!newEvent.instigators">
+                            <li><strong>Instigators:</strong></li>
+                            <li data-ng-repeat="instigator in newEvent.instigators" class="label label-info">{{instigator}}</li>
+                        </ul>
+                        <ul class="inline labeling" data-ng-hide="!newEvent.tags">
+                            <li><strong>Tags:</strong></li>
+                            <li data-ng-repeat="tag in newEvent.tags" class="label label-warning">{{tag}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-danger" data-ng-disabled="newEventForm.$invalid" data-ng-click="createEvent()">Create</button>
+        </div>
+    </form>
+</div>
