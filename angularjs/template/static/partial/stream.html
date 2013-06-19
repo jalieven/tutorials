@@ -77,51 +77,12 @@
                 </div>
                 <div class="span2">
                     <p>
-                        <a data-toggle="modal" href="#commentEvent" class="btn-danger btn-small"
-                           data-ng-click="selectEvent(event._id.$oid)">Comments: {{event.comments.length}}</a>
+                        <a data-toggle="modal" ng-href="/#/event/{{event._id.$oid}}/comment" class="btn-danger btn-small">
+                            Comments: {{event.comments.length}}
+                        </a>
                     </p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- This is the modal "comment on an event" form -->
-    <div id="commentEvent" class="modal hide fade" style="display: none; ">
-        <div class="modal-header">
-            <button class="close" data-dismiss="modal">X</button>
-            <h3>Comment on an event</h3>
-        </div>
-        <div class="modal-body">
-            <table class="table table-condensed">
-                <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>User</th>
-                    <th>Comment</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr data-ng-repeat="comment in commentEvent.comments">
-                    <td width="140px">2013/06/08 18:10:16</td>
-                    <td>jalie</td>
-                    <td>{{comment}}</td>
-                </tr>
-
-                </tbody>
-            </table>
-
-            <form class="form-horizontal">
-                <div class="control-group">
-                    <label class="control-label" for="create-comment">Message</label>
-
-                    <div class="controls">
-                        <textarea id="create-comment" class="input-xlarge" placeholder="Comment..." data-ng-model="commentEvent.newComment"></textarea>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn btn-danger" data-dismiss="modal" data-ng-click="addComment()">Comment</a>
         </div>
     </div>
 

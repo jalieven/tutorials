@@ -10,29 +10,15 @@ controllers.StreamController = function ($scope, events, Event) {
         $scope.eventFilter = {};
     };
 
-    $scope.selectEvent = function(id) {
-        angular.forEach($scope.events, function(event) {
-            if(event._id.$oid == id) {
-                $scope.commentEvent = new Event(event);
-            }
-        });
-    }
-
-    $scope.addComment = function() {
-        if($scope.commentEvent.comments == undefined) {
-            $scope.commentEvent.comments = [];
-        }
-        $scope.commentEvent.comments.push($scope.commentEvent.newComment);
-        $scope.commentEvent.$update({id: $scope.commentEvent._id.$oid, comments: $scope.commentEvent.comments}, function(event) {
-            $scope.commentEvent.comments = event.comments;
-        });
-    }
-
 };
 
-controllers.NewController = function($scope, $location, Event) {
+controllers.EventController = function($scope, $location, Event) {
+    $scope.newEvent = {};
+    $scope.newEvent.occurrence = moment().format("YYYY/MM/DD HH:mm:ss");
 
     $scope.createEvent = function() {
+        // first create the not yet used comments array
+        $scope.newEvent.comments = [];
         $scope.newEvent = new Event($scope.newEvent);
         $scope.newEvent.$save(function(savedEvent) {
             $location.path('/');
@@ -41,8 +27,25 @@ controllers.NewController = function($scope, $location, Event) {
 
 };
 
-controllers.AboutController = function ($scope) {
-    // TODO
+controllers.CommentController = function($scope, $location, event) {
+
+    $scope.event = event;
+
+    $scope.addComment = function() {
+        $scope.event.comments.push(
+            {
+                userid: 'jalie',
+                timestamp: moment().format("YYYY/MM/DD HH:mm:ss"),
+                message: $scope.newComment
+            });
+        var eventId =  $scope.event._id.$oid;
+        // the following line might look a bit odd but is due to some weirdness in MongoLab
+        $scope.event._id = undefined;
+        $scope.event.$update({id: eventId}, function(updatedEvent) {
+            updatedEvent.comments;
+        });
+    }
+
 };
 
 streamApp.controller(controllers);
@@ -59,15 +62,20 @@ streamApp.config(function ($routeProvider) {
                 }
             }
         })
-        .when('/new',
+        .when('/event',
         {
-            controller: 'NewController',
-            templateUrl: 'partial/new.html'
+            controller: 'EventController',
+            templateUrl: 'partial/event.html'
         })
-        .when('/about',
+        .when('/event/:eventId/comment',
         {
-            controller: 'AboutController',
-            templateUrl: 'partial/about.html'
+            controller: 'CommentController',
+            templateUrl: 'partial/comment.html',
+            resolve: {
+                event: function(EventLoader) {
+                    return EventLoader();
+                }
+            }
         })
         .otherwise({ redirectTo: '/'});
 });

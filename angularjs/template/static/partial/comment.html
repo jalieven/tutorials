@@ -1,0 +1,71 @@
+<div id="commentEvent">
+    <div>
+        <h3>Comment on the event</h3>
+        <div class="error alert" ng-show="newCommentForm.message.$error.maxlength">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Warning!</strong> Message too long (should be maximum 140 characters)!
+        </div>
+        <div class="well">
+            <p data-ng-hide="!event.occurrence">
+                <span class="badge">{{event.occurrence | fromNow}}</span>
+            </p>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span6">
+                        <p data-ng-hide="!event.message">
+                            <strong>Message:</strong>
+                            {{event.message}}
+                        </p>
+                        <p data-ng-hide="!event.link">
+                            <strong>Link:</strong>
+                            {{event.link}}
+                        </p>
+                    </div>
+                    <div class="span6">
+                        <ul class="inline labeling" data-ng-hide="!event.instigators">
+                            <li><strong>Instigators:</strong></li>
+                            <li data-ng-repeat="instigator in event.instigators" class="label label-info">{{instigator}}</li>
+                        </ul>
+                        <ul class="inline labeling" data-ng-hide="!event.tags">
+                            <li><strong>Tags:</strong></li>
+                            <li data-ng-repeat="tag in event.tags" class="label label-warning">{{tag}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Comment</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="comment in event.comments">
+                <td width="140px">{{comment.timestamp}}</td>
+                <td width="80px">{{comment.userid}}</td>
+                <td>{{comment.message}}</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <form class="form-horizontal" name="newCommentForm">
+            <div class="control-group">
+                <label class="control-label" for="create-comment">Message</label>
+
+                <div class="controls">
+                    <textarea name="message" id="create-comment" class="input-xlarge" placeholder="Comment..." data-ng-model="newComment"
+                              data-ng-maxlength="140" required></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-danger" data-ng-click="addComment()" data-ng-disabled="newCommentForm.$invalid">Comment</button>
+            </div>
+        </form>
+    </div>
+
+</div>

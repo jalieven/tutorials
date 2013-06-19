@@ -28,7 +28,7 @@ services.factory('EventLoader', ['Event', '$route', '$q', function(Event, $route
         var delay = $q.defer();
         Event.get({id: $route.current.params.eventId}, function(event) {
             delay.resolve(event);
-            delay.reject('Unable to fetch event ' + $route.current.params.recipeId);
+            delay.reject('Unable to fetch event ' + $route.current.params.eventId);
         });
         return delay.promise;
     };

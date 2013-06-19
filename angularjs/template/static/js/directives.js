@@ -9,8 +9,6 @@ directives.directive('dateTimePicker', function(){
         link: function(scope, element, attrs, ngModel){
             var input = element.find('input');
 
-            var now = moment().format("YYYY/MM/DD HH:mm:ss");
-
             element.datetimepicker({
                 format: "yyyy/mm/dd hh:ii:ss",
                 pickerPosition: 'bottom-left',
@@ -18,19 +16,15 @@ directives.directive('dateTimePicker', function(){
                 todayBtn: true
             });
 
-            // TODO why doesn't this work?
-            input.val(now);
-
-            element.bind('blur keyup change', function() {
-                scope.$apply(read);
+            scope.$watch(attrs.ngModel, function(value){
+               input.val(value);
             });
 
-            read(); // initialize
-
-            // Write data to the model
-            function read() {
+            element.bind('blur keyup change',  function() {
                 ngModel.$setViewValue(input.val());
-            }
+            });
+
+
         }
     }
 });
