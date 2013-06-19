@@ -8,7 +8,13 @@
                 <div class="dropdown-btn pull-right">
                     <a href="#" class="btn btn-danger btn-small" data-toggle="dropdown"><i class="icon-white icon-filter"></i>  Filter</a>
                     <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px; background-color: #202020;">
-                        <form>
+                        <form name="filterForm">
+                            <div class="control-group">
+                                <label class="control-label" for="filter-future">Hide future events?</label>
+                                <div class="controls">
+                                    <input id="filter-future" name="future-switch" type="checkbox" data-ng-model="eventFilter.past">
+                                </div>
+                            </div>
                             <div class="control-group">
                                 <label class="control-label" for="filter-tags">Tags</label>
                                 <div class="controls">
@@ -66,7 +72,7 @@
                     </p>
                 </div>
                 <div class="span4">
-                    <ul class="inline labeling">
+                    <ul class="inline labeling" data-ng-hide="!event.instigators">
                         <li><strong>Instigators:</strong></li>
                         <li data-ng-repeat="instigator in event.instigators" class="label label-info">{{instigator}}</li>
                     </ul>

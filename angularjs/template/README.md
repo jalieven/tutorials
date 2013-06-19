@@ -810,7 +810,7 @@ controllers.StreamController = function ($scope, events, Event) {
 }
 ```
 
-### Last splitup refactor
+### Last split-up refactor
 
 Now for the last part we split up the stream.js file into multiple module files like so:
 

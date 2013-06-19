@@ -35,36 +35,40 @@
             </div>
         </div>
 
-        <table class="table table-condensed">
-            <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>User</th>
-                <th>Comment</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="comment in event.comments">
-                <td width="140px">{{comment.timestamp}}</td>
-                <td width="80px">{{comment.userid}}</td>
-                <td>{{comment.message}}</td>
-            </tr>
 
-            </tbody>
-        </table>
-
-        <form class="form-horizontal" name="newCommentForm">
+        <form class="form-horizontal well" name="newCommentForm">
+            <table class="table table-condensed" data-ng-hide="event.comments.length == 0">
+                <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="comment in event.comments">
+                    <td width="140px">{{comment.timestamp}}</td>
+                    <td width="80px">{{comment.userid}}</td>
+                    <td>{{comment.message}}</td>
+                </tr>
+                </tbody>
+            </table>
             <div class="control-group">
                 <label class="control-label" for="create-comment">Message</label>
 
                 <div class="controls">
-                    <textarea name="message" id="create-comment" class="input-xlarge" placeholder="Comment..." data-ng-model="newComment"
-                              data-ng-maxlength="140" required></textarea>
+                    <div class="control-group input-append date datetime" style="width: 80%">
+                        <input type="text" name="message" id="create-comment" style="width: 80%" placeholder="Comment..." data-ng-model="newComment"
+                               data-ng-maxlength="140" required>
+                        <button type="submit" class="btn btn-danger" data-ng-click="addComment()" data-ng-disabled="newCommentForm.$invalid">
+                            <i class="icon-white icon-comment"></i>  Comment
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="form-actions">
-                <button class="btn btn-danger" data-ng-click="addComment()" data-ng-disabled="newCommentForm.$invalid">Comment</button>
-            </div>
+            <!--<div class="form-actions">-->
+                <!--<button class="btn btn-danger" data-ng-click="addComment()" data-ng-disabled="newCommentForm.$invalid">Comment</button>-->
+            <!--</div>-->
         </form>
     </div>
 

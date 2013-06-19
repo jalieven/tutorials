@@ -3,11 +3,6 @@
 
     <br/>
 
-    <div class="error alert" ng-show="newEventForm.message.$error.minlength">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Warning!</strong> Message too short (should be at least 3 characters)!
-    </div>
-
     <div class="error alert" ng-show="newEventForm.message.$error.maxlength">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Warning!</strong> Message too long (should be maximum 280 characters)!
@@ -54,7 +49,7 @@
             <label class="control-label" for="create-tags">Tags</label>
             <div class="controls">
                 <select id="create-tags" multiple="multiple" class="input-large"
-                        size="2" data-ng-model="newEvent.tags">
+                        size="2" data-ng-model="newEvent.tags" required>
                     <option value="ABSENCE">Absence</option>
                     <option value="BAMBOO">Bamboo</option>
                     <option value="COMMIT-AND-RUN">Commit And Run</option>
@@ -86,8 +81,8 @@
         <div class="control-group">
             <label class="control-label" for="create-message">Message</label>
             <div class="controls">
-                <textarea name="message" id="create-message" class="input-large" placeholder="Message..."
-                          data-ng-model="newEvent.message" data-ng-minlength="3" data-ng-maxlength="280" required></textarea>
+                <textarea name="message" id="create-message" class="input-large" placeholder="Message..." rows="5" style="width: 80%"
+                          data-ng-model="newEvent.message" data-ng-maxlength="280" required></textarea>
             </div>
         </div>
 
