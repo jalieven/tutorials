@@ -2,11 +2,17 @@ var streamApp = angular.module('streamApp', ['streamApp.services', 'streamApp.fi
 
 var controllers = {};
 
-controllers.StreamController = function ($scope, events) {
+controllers.StreamController = function ($scope, events, $socketio) {
+ 
+    
 
     $scope.events = events;
     $scope.eventFilter = {};
     $scope.eventFilter.past = true;
+
+    $socketio.on('socket_event', function(data) {
+	$scope.events.push(data);
+    });
 
     $scope.clearFilter = function(){
         $scope.eventFilter = {};
@@ -51,7 +57,24 @@ controllers.CommentController = function($scope, $location, event) {
 
 streamApp.controller(controllers);
 
-streamApp.config(function ($routeProvider) {
+var notificationInterceptor = function($q) {
+    return function(promise) {
+        var resolve = function(response) {
+            return response;
+        };
+        var reject = function(response) {
+            toastr.options.toastClass='notification';
+            toastr.options.timeOut = 50000;
+            toastr.options.extendedTimeOut = 50000;
+            toastr['error'](response.config.url, 'HTTP Error while fetching');
+	    return $q.reject(response);
+        };
+        return promise.then(resolve, reject);
+    }
+};
+
+streamApp.config(function ($routeProvider, $httpProvider) {
+
     $routeProvider
         .when('/',
         {
@@ -79,4 +102,9 @@ streamApp.config(function ($routeProvider) {
             }
         })
         .otherwise({ redirectTo: '/'});
+
+    $httpProvider.responseInterceptors.push(notificationInterceptor);
+    
 });
+
+
