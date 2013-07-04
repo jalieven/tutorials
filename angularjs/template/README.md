@@ -231,10 +231,8 @@ Here's the data-model:
                         }
                     ]"
 
-Put data-ng-repeat="event in events" (and binding moustaches for the well-divs!) in the well-element.
+Put data-ng-repeat="event in events | orderBy: 'occurrence':true" (and binding moustaches for the well-divs!) in the well-element.
 
-Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute
-and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
 Now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
 Actually we want a user-friendly date filter so do this:
 
@@ -265,22 +263,39 @@ streamApp.controller('StreamController', function($scope) {
 });
 ```
 
-Lets define 2 routes now: the stream page and the about page:
+Lets define all the routes now:
 
 ```javascript
-streamApp.config(function ($routeProvider) {
-   $routeProvider
-	   .when('/',
-			{
-				controller: 'StreamController',
-				templateUrl: 'stream.html'
-			})
-	   .when('/about',
-			{
-				controller: 'AboutController',
-				templateUrl: 'about.html'
-			})
-	   .otherwise({ redirectTo: '/'});
+streamApp.config(function ($routeProvider, $httpProvider) {
+
+    $routeProvider
+        .when('/',
+        {
+            controller: 'StreamController',
+            templateUrl: 'partial/stream.html',
+            resolve: {
+                events: function (EventsLoader) {
+                    return EventsLoader();
+                }
+            }
+        })
+        .when('/event',
+        {
+            controller: 'EventController',
+            templateUrl: 'partial/event.html'
+        })
+        .when('/event/:eventId/comment',
+        {
+            controller: 'CommentController',
+            templateUrl: 'partial/comment.html'
+        })
+        .when('/search',
+        {
+            controller: 'SearchController',
+            templateUrl: 'partial/search.html'
+        })
+        .otherwise({ redirectTo: '/'});
+
 });
 ```
 
@@ -291,7 +306,9 @@ var controllers = {};
 
 controllers.StreamController = function ($scope) { ... }
 
-controllers.AboutController = function ($scope) { ... }
+controllers.EventController = function ($scope) { ... }
+
+...
 
 streamApp.controller(controllers);
 ```
@@ -308,29 +325,42 @@ And add the href to the "About" button on the view.
 <a href="#/about">...
 ```
 
->>> TODO overheveling markup labeling inline
-
 If that is done show the history-feature in the browser.
+
+Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute.
 
 Since we have a single tag select as filter now refactor to a multiple select:
 
 ```javascript
-streamApp.filter("tagsFilter", function() {
-	return function (events, eventFilter) {
-		var out = [];
-		if (eventFilter && eventFilter.tags) {
-			angular.forEach(events, function (event) {
-				for (var i = 0; i < event.tags.length; i++) {
-					if($.inArray(event.tags[i], eventFilter.tags) != -1) {
-						out.push(event);
-					}
-				}
-			})
-		} else {
-			out = events;
-		}
-		return $.unique(out);
-	};
+filters.filter("tagsFilter", function () {
+    return function (events, eventFilter) {
+        var out = [];
+
+        var now = moment();
+        angular.forEach(events, function (event) {
+            for (var i = 0; i < event.tags.length; i++) {
+                time = moment(event.occurrence);
+                if (eventFilter.past && time.isBefore(now)) {
+                    if (eventFilter.tags) {
+                        if ($.inArray(event.tags[i], eventFilter.tags) != -1) {
+                            out.push(event);
+                        }
+                    } else {
+                        out.push(event);
+                    }
+                } else if(!eventFilter.past) {
+                    if (eventFilter.tags) {
+                        if ($.inArray(event.tags[i], eventFilter.tags) != -1) {
+                            out.push(event);
+                        }
+                    } else {
+                        out.push(event);
+                    }
+                }
+            }
+        });
+        return $.unique(out);
+    };
 });
 ```
 
@@ -412,39 +442,32 @@ So make a new partial with the html placeholder code so that the datetimepicker 
 Create a new "date picking" custom directive:
 
 ```javascript
-streamApp.directive('dateTimePicker', function(){
-	return {
-		restrict: 'E',
-		replace: true,
-		require: '?ngModel',
-		templateUrl: 'partial/datetimepicker.html',
-		link: function(scope, element, attrs, ngModel){
-			// this piece of code will make sure what comes out of
-			// the Javascript library is 'seen' by AngularJS
-			var input = element.find('input');
+directives.directive('dateTimePicker', function(){
+    return {
+        restrict: 'E',
+        replace: true,
+        require: '?ngModel',
+        templateUrl: 'partial/datetimepicker.html',
+        link: function(scope, element, attrs, ngModel){
+            var input = element.find('input');
 
-			// here we setup the datetimepicker library
-			element.datetimepicker({
-				format: "yyyy/mm/dd hh:ii:ss",
-				pickerPosition: 'bottom-left',
-				autoclose: true,
-				todayBtn: true
-			});
+            element.datetimepicker({
+                format: "yyyy/mm/dd hh:ii:ss",
+                pickerPosition: 'bottom-left',
+                autoclose: true,
+                todayBtn: true
+            });
 
-			// here we make sure when the user interacts
-			// with the datetimepicker the ngModel gets updated!
-			element.bind('blur keyup change', function() {
-				scope.$apply(read);
-			});
+            scope.$watch(attrs.ngModel, function(value){
+               input.val(value);
+            });
 
-			read(); // initialize
+            element.bind('blur keyup change',  function() {
+                ngModel.$setViewValue(input.val());
+            });
 
-			// Write data to the model
-			function read() {
-				ngModel.$setViewValue(input.val());
-			}
-		}
-	}
+        }
+    }
 });
 ```
 
@@ -464,7 +487,7 @@ that allow you to control the form elements. AngularJS looks at all the required
 these special variables accordingly. So if our Event message is empty, recipeForm.$invalid gets set to true
 (and $valid to false), and our Save button is instantly disabled.
 
-Correctly set the name-atteributes of the input in the newEventForm and in the modal-header of the create event modal:
+Correctly set the name-attributes of the input in the newEventForm and in the modal-header of the create event modal:
 
 ```html
 <br/>
