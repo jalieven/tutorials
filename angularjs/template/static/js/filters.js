@@ -27,13 +27,12 @@ filters.filter("tagsFilter", function () {
                 }
             }
         });
-
         return $.unique(out);
     };
 });
 
 filters.filter('fromNow', function () {
     return function (dateString) {
-        return moment(new Date(dateString)).fromNow()
+        return moment(dateString).fromNow();
     };
 });

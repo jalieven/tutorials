@@ -1,0 +1,106 @@
+<div id="searchEvent">
+    <h3>Search for an event</h3>
+
+    <br/>
+
+    <form name="searchEventForm" class="form-horizontal well">
+        <div class="control-group">
+            <label class="control-label" for="create-instigators">Instigators</label>
+            <div class="controls">
+                <select id="create-instigators" multiple="multiple"
+                        class="input-large" size="2" data-ng-model="searchEvent.instigators">
+                    <option value="jalie">jalie</option>
+                    <option value="tiroo">tiroo</option>
+                    <option value="gertdw">gertdw</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-judgement">Judgement</label>
+            <div class="controls">
+                <select id="create-judgement" multiple="multiple" class="input-large"
+                        size="5" data-ng-model="searchEvent.judgement">
+                    <option value="ALARMING">Alarming</option>
+                    <option value="DETERIORATING">Deteriorating</option>
+                    <option value="FAIL">Fail</option>
+                    <option value="FUNNY">Funny</option>
+                    <option value="GRAVE">Grave</option>
+                    <option value="HEROLIKE">Herolike</option>
+                    <option value="IMPROVING">Improving</option>
+                    <option value="INDIFFERENT">Indifferent</option>
+                    <option value="INFORMATIVE">Informative</option>
+                    <option value="PALM_FACE">Palm/Face</option>
+                    <option value="SHAMEFUL">Shameful</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create-tags">Tags</label>
+            <div class="controls">
+                <select id="create-tags" multiple="multiple" class="input-large"
+                        size="10" data-ng-model="searchEvent.tags">
+                    <option value="ABSENCE">Absence</option>
+                    <option value="BAMBOO">Bamboo</option>
+                    <option value="COMMIT-AND-RUN">Commit And Run</option>
+                    <option value="COMPLIANCE">Compliance</option>
+                    <option value="COMPLAINT">Complaint</option>
+                    <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                    <option value="HACK">Hack</option>
+                    <option value="HELP-REQUEST">Help Request</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                    <option value="NEXUS">Nexus</option>
+                    <option value="PRAISE">Praise</option>
+                    <option value="QUIBBLE">Quibble</option>
+                    <option value="QUIP">Quip</option>
+                    <option value="REDEPLOYMENT">Redeployment</option>
+                    <option value="SERVER-RESTART">Server Restart</option>
+                    <option value="SONAR">Sonar</option>
+                    <option value="TECHNICAL-QUESTION">Technical Question</option>
+                    <option value="TODO">Todo</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-danger" data-ng-disabled="searchEventForm.$invalid" data-ng-click="searchForEvent()">Search</button>
+        </div>
+    </form>
+
+    <div class="well" data-ng-repeat="event in foundEvents | orderBy: 'occurrence':true">
+        <p>
+            <span class="badge">{{event.occurrence | fromNow}}</span>
+        </p>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span6">
+                    <p>
+                        <strong>Message:</strong>
+                        {{event.message}}
+                    </p>
+                    <p data-ng-hide="!event.link">
+                        <strong>Link:</strong>
+                        <a href="{{event.link}}" target="_blank">{{event.link}}</a>
+                    </p>
+                </div>
+                <div class="span4">
+                    <ul class="inline labeling" data-ng-hide="!event.instigators">
+                        <li><strong>Instigators:</strong></li>
+                        <li data-ng-repeat="instigator in event.instigators" class="label label-info">{{instigator}}</li>
+                    </ul>
+                    <ul class="inline labeling">
+                        <li><strong>Tags:</strong></li>
+                        <li data-ng-repeat="tag in event.tags" class="label label-warning">{{tag}}</li>
+                    </ul>
+                </div>
+                <div class="span2">
+                    <p>
+                        <a data-toggle="modal" ng-href="/#/event/{{event._id.$oid}}/comment" class="btn-danger btn-small">
+                            Comments: {{event.comments.length}}
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

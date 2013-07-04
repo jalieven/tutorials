@@ -47,7 +47,7 @@
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="comment in event.comments">
-                    <td width="140px">{{comment.timestamp}}</td>
+                    <td width="140px">{{comment.timestamp | fromNow}}</td>
                     <td width="80px">{{comment.userid}}</td>
                     <td>{{comment.message}}</td>
                 </tr>
