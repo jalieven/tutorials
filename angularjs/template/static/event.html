@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>AngularJS EventStream Tutorial</title>
+    <meta name="description" content="ACD Tutorials EventStream AngularJS">
+
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/darkstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="css/tweaks.css">
+</head>
+<body>
+
+    <!-- This is the navigation-bar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="index.html">ACD EventStream</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li><a href="index.html">Live Stream</a></li>
+                        <li><a href="event.html">Create Event</a></li>
+                    </ul>
+                    <ul class="nav pull-right">
+                        <li><a href="search.html">Search</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- This is the content div -->
+    <div class="container">
+
+        <div id="createEvent">
+            <h3>Create an event</h3>
+
+            <br/>
+
+            <form name="newEventForm" class="form-horizontal well">
+                <div class="control-group">
+                    <label class="control-label">Occurrence</label>
+                    <div class="controls">
+                        <div id="create-occurrence-datetimepicker" class="input-append date">
+                            <input data-format="dd/MM/yyyy hh:mm:ss" type="text">
+                            <span class="add-on">
+                              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                              </i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-instigators">Instigators</label>
+                    <div class="controls">
+                        <select id="create-instigators" multiple="multiple"
+                                class="input-large" size="2">
+                            <option value="jalie">jalie</option>
+                            <option value="tiroo">tiroo</option>
+                            <option value="gertdw">gertdw</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-judgement">Judgement</label>
+                    <div class="controls">
+                        <select id="create-judgement" multiple="multiple" class="input-large" size="2">
+                            <option value="ALARMING">Alarming</option>
+                            <option value="DETERIORATING">Deteriorating</option>
+                            <option value="FAIL">Fail</option>
+                            <option value="FUNNY">Funny</option>
+                            <option value="GRAVE">Grave</option>
+                            <option value="HEROLIKE">Herolike</option>
+                            <option value="IMPROVING">Improving</option>
+                            <option value="INDIFFERENT">Indifferent</option>
+                            <option value="INFORMATIVE">Informative</option>
+                            <option value="PALM_FACE">Palm/Face</option>
+                            <option value="SHAMEFUL">Shameful</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-tags">Tags</label>
+                    <div class="controls">
+                        <select id="create-tags" multiple="multiple" class="input-large" size="2">
+                            <option value="ABSENCE">Absence</option>
+                            <option value="BAMBOO">Bamboo</option>
+                            <option value="COMMIT-AND-RUN">Commit And Run</option>
+                            <option value="COMPLIANCE">Compliance</option>
+                            <option value="COMPLAINT">Complaint</option>
+                            <option value="FUNCTIONAL-QUESTION">Functional Question</option>
+                            <option value="HACK">Hack</option>
+                            <option value="HELP-REQUEST">Help Request</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="NEXUS">Nexus</option>
+                            <option value="PRAISE">Praise</option>
+                            <option value="QUIBBLE">Quibble</option>
+                            <option value="QUIP">Quip</option>
+                            <option value="REDEPLOYMENT">Redeployment</option>
+                            <option value="SERVER-RESTART">Server Restart</option>
+                            <option value="SONAR">Sonar</option>
+                            <option value="TECHNICAL-QUESTION">Technical Question</option>
+                            <option value="TODO">Todo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-link">Link</label>
+                    <div class="controls">
+                        <input id="create-link" type="url" placeholder="URL" class="input-large">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="create-message">Message</label>
+                    <div class="controls">
+                        <textarea name="message" id="create-message" class="input-large" placeholder="Message..." rows="5" style="width: 80%"></textarea>
+                    </div>
+                </div>
+
+                <div class="well">
+                    <p>
+                        <span class="badge">2013/05/08 18:10:16</span>
+                    </p>
+
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <p>
+                                    <strong>Message:</strong>
+                                    Vrijdag ballekesdag...
+                                </p>
+
+                                <p>
+                                    <strong>Link:</strong>
+                                    <a href="http://www.deli-pierre.be" target="_blank">http://www.deli-pierre.be</a>
+                                </p>
+                            </div>
+                            <div class="span6">
+                                <ul class="inline labeling">
+                                    <li><strong>Instigators:</strong></li>
+                                    <li class="label label-info">werner</li>
+                                    <li class="label label-info">tneckeb</li>
+                                </ul>
+                                <ul class="inline labeling">
+                                    <li><strong>Tags:</strong></li>
+                                    <li class="label label-warning">TODO</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <a href="index.html" class="btn btn-danger">Create</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Insert JavaScript files -->
+    <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/vendor/angular.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/bootstrap-datetimepicker.min.js"></script>
+    <script src="js/vendor/moment.min.js"></script>
+
+    <script src="js/stream.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $('#create-occurrence-datetimepicker').datetimepicker({
+                format: 'yyyy/MM/dd hh:mm:ss'
+            });
+
+        });
+    </script>
+
+</body>
+</html>

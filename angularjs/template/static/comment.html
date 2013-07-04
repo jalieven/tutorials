@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>AngularJS EventStream Tutorial</title>
+    <meta name="description" content="ACD Tutorials EventStream AngularJS">
+
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/darkstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="css/tweaks.css">
+</head>
+<body>
+
+<!-- This is the navigation-bar -->
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="index.html">ACD EventStream</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li><a href="index.html">Live Stream</a></li>
+                    <li><a href="event.html">Create Event</a></li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li><a href="search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- This is the content div -->
+<div class="container">
+
+    <div id="commentEvent">
+        <div>
+            <h3>Comment on the event</h3>
+
+            <div class="well">
+                <p>
+                    <span class="badge">2013/05/08 18:10:16</span>
+                </p>
+
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <p>
+                                <strong>Message:</strong>
+                                Vrijdag ballekesdag...
+                            </p>
+
+                            <p>
+                                <strong>Link:</strong>
+                                <a href="http://www.deli-pierre.be" target="_blank">http://www.deli-pierre.be</a>
+                            </p>
+                        </div>
+                        <div class="span6">
+                            <ul class="inline labeling">
+                                <li><strong>Instigators:</strong></li>
+                                <li class="label label-info">werner</li>
+                                <li class="label label-info">tneckeb</li>
+                            </ul>
+                            <ul class="inline labeling">
+                                <li><strong>Tags:</strong></li>
+                                <li class="label label-warning">TODO</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <form class="form-horizontal well" name="newCommentForm">
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Comment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td width="140px">2013/06/08 18:10:16</td>
+                            <td>jalie</td>
+                            <td>Nicely done. Would be cool with fries.</td>
+                        </tr>
+                        <tr>
+                            <td width="140px">2013/06/08 18:18:16</td>
+                            <td>jacob</td>
+                            <td>What about mayo?</td>
+                        </tr>
+                        <tr>
+                            <td width="140px">2013/06/08 18:18:16</td>
+                            <td>benh</td>
+                            <td>I want a "balleken"... and I want this comment to be very long so I will talk a bit more... Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="control-group">
+                    <label class="control-label" for="create-comment">Message</label>
+                    <div class="controls">
+                        <div class="control-group input-append date datetime" style="width: 80%">
+                            <input type="text" name="message" id="create-comment" style="width: 80%" placeholder="Comment...">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="icon-white icon-comment"></i>  Comment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Insert JavaScript files -->
+<script src="js/vendor/jquery.min.js"></script>
+<script src="js/vendor/angular.min.js"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/bootstrap-datetimepicker.min.js"></script>
+<script src="js/vendor/moment.min.js"></script>
+
+<script src="js/stream.js"></script>
+
+</body>
+</html>
