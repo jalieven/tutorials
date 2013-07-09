@@ -473,58 +473,74 @@ var myModule = angular.module(...);
 
 myModule.directive('namespaceDirectiveName', function factory(injectables) {
     var directiveDefinitionObject = {
-        // Declare how directive can be used in a template as an element, attribute, class, comment, or any combination
+        // Declare how directive can be used in a template as an element, attribute, class, comment
         restrict: string, // E, A, C or M (or any combination, default is A)
 
         // Set the order of execution in the template relative to other directives on the element.
         priority: number, // higher numbers run first (default is 0)
 
-        template: string, // Specify an inline template as a string. Not used if you’re specifying your template as a URL.
+		// Specify an inline template as a string. Not used templateUrl is set.
+        template: string,
 
-        templateUrl: string, // Specify the template to be loaded by URL. This is not used if you’ve specified an inline template as a string.
+		// Specify the template to be loaded by URL.
+		// This is not used if you’ve specified an inline template as a string.
+        templateUrl: string,
 
-        replace: bool, // If true, replace the current element. If false or unspecified, append this directive to the current element.
+		// If true, replace the current element.
+		// If false or unspecified, append this directive to the current element.
+        replace: bool,
 
         // Lets you move the original children of a directive to a location inside the new template.
-        transclude: bool, 	// in addition to replacing and appending, will delete the original content, but make it available for reinsertion within
-        					// your template through a directive called ng-transclude
+        // In addition to replacing and appending, will delete the original content, but make it
+        // available for reinsertion within your template through a directive called ng-transclude
+        transclude: bool,
 
         // Create a new scope for this directive rather than inheriting the parent scope.
-        // When true: You’ll have the ability to read all the values in the scopes above this one in the tree.
-        // 		This scope will be shared with any other directives on your DOM element that request this kind
-        // 		of scope and can be used to communicate with them.
+        // When true: You’ll have the ability to read all the values in the scopes above
+        // 		this one in the scope tree. This scope will be shared with any other directives
+        //		on your DOM element that request this kind of scope and can be
+        //		used to communicate with them.
         // When false: You'll get the existing scope from your directive’s DOM element
-        // When an object: You’ll want to use this option when you need to isolate the operation of this directive from the
-        // 		parent scope when creating reusable components. You can pass specific attributes from the parent scope
+        // When an object: You’ll want to use this option when you need to isolate the operation
+        //		of this directive from the parent scope when creating reusable components.
+        //		You can pass specific attributes from the parent scope
         //		to the isolate scope by passing a map of directive attribute names.
         scope: bool, // (or object)
 
         // Create a controller which publishes an API for communicating across directives.
         controller: function controllerConstructor($scope, $element, $attrs, $transclude){},
 
-        require: string, // Require that another directive be present for this directive to function correctly.
+		// Require that another directive be present for this directive to function correctly.
+        require: string,
 
-        compile: function compile(tElement, tAttrs, transclude) {  // mind you: no scope is available here! It is not yet instantiated
-            // Compile phase: "TRANSFORMING THE TEMPLATE" Angular walks the DOM to identify all the registered directives in the
+        compile: function compile(tElement, tAttrs, transclude) {
+        	// Mind you: no scope is available here! It is not yet instantiated
+            // Compile phase: "TRANSFORMING THE TEMPLATE"
+            // Angular walks the DOM to identify all the registered directives in the
             // template. For each directive, it then transforms the DOM based on the directive’s
             // rules (template, replace, transclude, and so on), and calls the compile function
             // if it exists. The result is a compiled template function, which will invoke the link
             // functions collected from all of the directives.
             return {
-                // Programmatically modify the DOM template for features across copies of a directive, as when used in ng-repeat.
-                // Your compile function can also return link functions to modify the resulting element instances.
+                // Programmatically modify the DOM template for features across copies of a directive,
+                // as when used in ng-repeat. Your compile function can also return link functions to
+                // modify the resulting element instances.
                 pre: function preLink(scope, iElement, iAttrs, controller) {
-					// Runs after the compile phase, but before directives on the child elements are linked
+					// Runs after the compile phase,
+					// but before directives on the child elements are linked
                 }, post: function postLink(scope, iElement, iAttrs, controller) {
 					// Runs after all the child element directives are linked
                 }
             }
         },
-        link: function postLink(scope, iElement, iAttrs) {  // take note of the 'i' prefix == instance
-            // Link phase: "MODIFY DATA IN THE VIEW" To make the view dynamic, Angular then runs a link function for each directive.
+        link: function postLink(scope, iElement, iAttrs) {
+        	// Take note of the 'i' prefix == instance (in the compile this is 't' == template)
+            // Link phase: "MODIFY DATA IN THE VIEW" To make the view dynamic,
+            // Angular then runs a link function for each directive.
             // The link functions typically creates listeners on the DOM or the model. These
             // listeners keep the view and the model in sync at all times.
-            // Programmatically modify resulting DOM element instances, add event listeners, and set up data binding.
+            // So here you will programmatically modify resulting DOM element instances,
+            // add event listeners, and set up data binding.
         }
     };
     return directiveDefinitionObject;
