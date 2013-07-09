@@ -231,10 +231,8 @@ Here's the data-model:
                         }
                     ]"
 
-Put data-ng-repeat="event in events" (and binding moustaches for the well-divs!) in the well-element.
+Put data-ng-repeat="event in events | orderBy: 'occurrence':true" (and binding moustaches for the well-divs!) in the well-element.
 
-Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute
-and in our previous data-ng-repeat="event in events | filter:eventFilter | orderBy: 'occurrence':true"
 Now add a date filter to the binding of the date-badge: | date:'dd-MM-yyyy HH:mm:ss'
 Actually we want a user-friendly date filter so do this:
 
@@ -265,22 +263,34 @@ streamApp.controller('StreamController', function($scope) {
 });
 ```
 
-Lets define 2 routes now: the stream page and the about page:
+Lets define all the routes now:
 
 ```javascript
-streamApp.config(function ($routeProvider) {
-   $routeProvider
-	   .when('/',
-			{
-				controller: 'StreamController',
-				templateUrl: 'stream.html'
-			})
-	   .when('/about',
-			{
-				controller: 'AboutController',
-				templateUrl: 'about.html'
-			})
-	   .otherwise({ redirectTo: '/'});
+streamApp.config(function ($routeProvider, $httpProvider) {
+
+    $routeProvider
+        .when('/',
+        {
+            controller: 'StreamController',
+            templateUrl: 'partial/stream.html'
+        })
+        .when('/event',
+        {
+            controller: 'EventController',
+            templateUrl: 'partial/event.html'
+        })
+        .when('/event/:eventId/comment',
+        {
+            controller: 'CommentController',
+            templateUrl: 'partial/comment.html'
+        })
+        .when('/search',
+        {
+            controller: 'SearchController',
+            templateUrl: 'partial/search.html'
+        })
+        .otherwise({ redirectTo: '/'});
+
 });
 ```
 
@@ -291,7 +301,9 @@ var controllers = {};
 
 controllers.StreamController = function ($scope) { ... }
 
-controllers.AboutController = function ($scope) { ... }
+controllers.EventController = function ($scope) { ... }
+
+...
 
 streamApp.controller(controllers);
 ```
@@ -308,29 +320,42 @@ And add the href to the "About" button on the view.
 <a href="#/about">...
 ```
 
->>> TODO overheveling markup labeling inline
-
 If that is done show the history-feature in the browser.
+
+Search for <select id="filter-tags"> and add data-ng-model="eventFilter.tags" attribute.
 
 Since we have a single tag select as filter now refactor to a multiple select:
 
 ```javascript
-streamApp.filter("tagsFilter", function() {
-	return function (events, eventFilter) {
-		var out = [];
-		if (eventFilter && eventFilter.tags) {
-			angular.forEach(events, function (event) {
-				for (var i = 0; i < event.tags.length; i++) {
-					if($.inArray(event.tags[i], eventFilter.tags) != -1) {
-						out.push(event);
-					}
-				}
-			})
-		} else {
-			out = events;
-		}
-		return $.unique(out);
-	};
+filters.filter("tagsFilter", function () {
+    return function (events, eventFilter) {
+        var out = [];
+
+        var now = moment();
+        angular.forEach(events, function (event) {
+            for (var i = 0; i < event.tags.length; i++) {
+                time = moment(event.occurrence);
+                if (eventFilter.past && time.isBefore(now)) {
+                    if (eventFilter.tags) {
+                        if ($.inArray(event.tags[i], eventFilter.tags) != -1) {
+                            out.push(event);
+                        }
+                    } else {
+                        out.push(event);
+                    }
+                } else if(!eventFilter.past) {
+                    if (eventFilter.tags) {
+                        if ($.inArray(event.tags[i], eventFilter.tags) != -1) {
+                            out.push(event);
+                        }
+                    } else {
+                        out.push(event);
+                    }
+                }
+            }
+        });
+        return $.unique(out);
+    };
 });
 ```
 
@@ -412,43 +437,100 @@ So make a new partial with the html placeholder code so that the datetimepicker 
 Create a new "date picking" custom directive:
 
 ```javascript
-streamApp.directive('dateTimePicker', function(){
-	return {
-		restrict: 'E',
-		replace: true,
-		require: '?ngModel',
-		templateUrl: 'partial/datetimepicker.html',
-		link: function(scope, element, attrs, ngModel){
-			// this piece of code will make sure what comes out of
-			// the Javascript library is 'seen' by AngularJS
-			var input = element.find('input');
+directives.directive('dateTimePicker', function(){
+    return {
+        restrict: 'E',
+        replace: true,
+        require: '?ngModel',
+        templateUrl: 'partial/datetimepicker.html',
+        link: function(scope, element, attrs, ngModel){
+            var input = element.find('input');
 
-			// here we setup the datetimepicker library
-			element.datetimepicker({
-				format: "yyyy/mm/dd hh:ii:ss",
-				pickerPosition: 'bottom-left',
-				autoclose: true,
-				todayBtn: true
-			});
+            element.datetimepicker({
+                format: "yyyy/mm/dd hh:ii:ss",
+                pickerPosition: 'bottom-left',
+                autoclose: true,
+                todayBtn: true
+            });
 
-			// here we make sure when the user interacts
-			// with the datetimepicker the ngModel gets updated!
-			element.bind('blur keyup change', function() {
-				scope.$apply(read);
-			});
+            scope.$watch(attrs.ngModel, function(value){
+               input.val(value);
+            });
 
-			read(); // initialize
+            element.bind('blur keyup change',  function() {
+                ngModel.$setViewValue(input.val());
+            });
 
-			// Write data to the model
-			function read() {
-				ngModel.$setViewValue(input.val());
-			}
-		}
-	}
+        }
+    }
 });
 ```
 
-TODO: do creation of the comments in angularjs use case...
+Here's a complete pseudo directive with all its options explained
+
+```javascript
+var myModule = angular.module(...);
+
+myModule.directive('namespaceDirectiveName', function factory(injectables) {
+    var directiveDefinitionObject = {
+        // Declare how directive can be used in a template as an element, attribute, class, comment, or any combination
+        restrict: string, // E, A, C or M (or any combination, default is A)
+
+        // Set the order of execution in the template relative to other directives on the element.
+        priority: number, // higher numbers run first (default is 0)
+
+        template: string, // Specify an inline template as a string. Not used if you’re specifying your template as a URL.
+
+        templateUrl: string, // Specify the template to be loaded by URL. This is not used if you’ve specified an inline template as a string.
+
+        replace: bool, // If true, replace the current element. If false or unspecified, append this directive to the current element.
+
+        // Lets you move the original children of a directive to a location inside the new template.
+        transclude: bool, 	// in addition to replacing and appending, will delete the original content, but make it available for reinsertion within
+        					// your template through a directive called ng-transclude
+
+        // Create a new scope for this directive rather than inheriting the parent scope.
+        // When true: You’ll have the ability to read all the values in the scopes above this one in the tree.
+        // 		This scope will be shared with any other directives on your DOM element that request this kind
+        // 		of scope and can be used to communicate with them.
+        // When false: You'll get the existing scope from your directive’s DOM element
+        // When an object: You’ll want to use this option when you need to isolate the operation of this directive from the
+        // 		parent scope when creating reusable components. You can pass specific attributes from the parent scope
+        //		to the isolate scope by passing a map of directive attribute names.
+        scope: bool, // (or object)
+
+        // Create a controller which publishes an API for communicating across directives.
+        controller: function controllerConstructor($scope, $element, $attrs, $transclude){},
+
+        require: string, // Require that another directive be present for this directive to function correctly.
+
+        compile: function compile(tElement, tAttrs, transclude) {  // mind you: no scope is available here! It is not yet instantiated
+            // Compile phase: "TRANSFORMING THE TEMPLATE" Angular walks the DOM to identify all the registered directives in the
+            // template. For each directive, it then transforms the DOM based on the directive’s
+            // rules (template, replace, transclude, and so on), and calls the compile function
+            // if it exists. The result is a compiled template function, which will invoke the link
+            // functions collected from all of the directives.
+            return {
+                // Programmatically modify the DOM template for features across copies of a directive, as when used in ng-repeat.
+                // Your compile function can also return link functions to modify the resulting element instances.
+                pre: function preLink(scope, iElement, iAttrs, controller) {
+					// Runs after the compile phase, but before directives on the child elements are linked
+                }, post: function postLink(scope, iElement, iAttrs, controller) {
+					// Runs after all the child element directives are linked
+                }
+            }
+        },
+        link: function postLink(scope, iElement, iAttrs) {  // take note of the 'i' prefix == instance
+            // Link phase: "MODIFY DATA IN THE VIEW" To make the view dynamic, Angular then runs a link function for each directive.
+            // The link functions typically creates listeners on the DOM or the model. These
+            // listeners keep the view and the model in sync at all times.
+            // Programmatically modify resulting DOM element instances, add event listeners, and set up data binding.
+        }
+    };
+    return directiveDefinitionObject;
+});
+```
+
 
 #### Validation
 
