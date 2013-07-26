@@ -1,0 +1,108 @@
+svg {
+    font: 10px sans-serif;
+}
+
+.y.axis path {
+    display: none;
+}
+
+.y.axis line {
+    stroke: #fff;
+    stroke-opacity: .2;
+    shape-rendering: crispEdges;
+}
+
+.y.axis .zero line {
+    stroke: #f4f4f4;
+    stroke-opacity: 1;
+}
+
+.title {
+    font: 300 78px Helvetica Neue;
+    fill: #666;
+}
+
+.birthyear,
+.age {
+    text-anchor: middle;
+}
+
+.birthyear {
+    fill: #fff;
+}
+
+rect {
+    fill-opacity: .6;
+    fill: #e3dee0;
+}
+
+rect:first-child {
+    fill: #88afb4;
+}
+
+
+#easy-as-pie-chart {
+    background-color: #ffffff;
+    border: 1px solid gray;
+    font: 10px sans-serif;
+    height: 300px;
+    text-shadow: none;
+    width: 450px;
+}
+#easy-as-pie-chart .total{
+    font-size: 18px;
+    font-weight: bold;
+}
+#easy-as-pie-chart .units{
+    fill: gray;
+    font-size: 12px;
+}
+#easy-as-pie-chart .label{
+    fill: #CCC;
+    font-size: 12px;
+    font-weight: bold;
+}
+#easy-as-pie-chart .value{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+
+div.chart{
+    font-family:sans-serif;
+    font-size:0.7em;
+}
+div.bar {
+    background-color: #a4a1a2;
+    color:white;
+    height:3em;
+    line-height:3em;
+    padding-right:1em;
+    margin-bottom:2px;
+    text-align:right;
+}
+
+
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin: auto;
+    position: relative;
+    width: 960px;
+}
+
+text {
+    font: 10px sans-serif;
+}
+
+form {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+input {
+    margin: 0 7px;
+}
+

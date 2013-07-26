@@ -1,0 +1,1 @@
+http://geoserver-milieuinfo-on-1-mgt.mmis.be:8080/raadpleegdienstenmilieupubliek/lne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=lne:prtr_luchtdiffuus&maxFeatures=350&outputFormat=SHAPE-ZIP
