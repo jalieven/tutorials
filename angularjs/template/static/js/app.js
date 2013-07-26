@@ -2,7 +2,7 @@ var streamApp = angular.module('streamApp', ['streamApp.services', 'streamApp.fi
 
 var controllers = {};
 
-controllers.StreamController = function ($scope, events, $socketio) {
+controllers.StreamController = function ($scope, events, $socketio, Event) {
 
     $scope.events = events;
     $scope.eventFilter = {};
@@ -69,6 +69,7 @@ controllers.CommentController = function ($scope, $location, $socketio, event) {
         // push it onto the event
         $scope.event.comments.push(createdComment);
         // the following line might look a bit odd but is due to some weirdness in MongoLab
+        // and AngularJS
         $scope.event._id = undefined;
         // do a PUT operation on MongoLab
         $scope.event.$update({id: eventId}, function(savedEvent) {
@@ -109,6 +110,11 @@ controllers.SearchController = function($scope, $socketio, Event) {
         var query = JSON.stringify(search);
         $scope.foundEvents = Event.query({}, {q: query});
     };
+
+};
+
+controllers.TweenController = function($scope) {
+
 
 };
 
@@ -162,6 +168,11 @@ streamApp.config(function ($routeProvider, $httpProvider) {
         {
             controller: 'SearchController',
             templateUrl: 'partial/search.html'
+        })
+        .when('/tween',
+        {
+            controller: 'TweenController',
+            templateUrl: 'partial/tween.html'
         })
         .otherwise({ redirectTo: '/'});
 

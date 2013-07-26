@@ -1,7 +1,7 @@
 var services = angular.module('streamApp.services', ['ngResource']);
 
 services.factory('Event', function($resource) {
-    return $resource('https://api.mongolab.com/api/1/databases/events/collections/event/:id',
+    return $resource('https://api.mongoolab.com/api/1/databases/events/collections/event/:id',
         { apiKey: 'k8zps1HXroKSrtGtV_MBawdgtM6AblsF', q: '@q' },
         {
             get: {method: 'GET'},

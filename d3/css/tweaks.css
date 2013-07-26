@@ -31,15 +31,6 @@ svg {
     fill: #fff;
 }
 
-rect {
-    fill-opacity: .6;
-    fill: #e3dee0;
-}
-
-rect:first-child {
-    fill: #88afb4;
-}
-
 
 #easy-as-pie-chart {
     background-color: #ffffff;
@@ -67,7 +58,9 @@ rect:first-child {
     font-weight: bold;
 }
 
-
+.capitalize {
+    text-transform:capitalize;
+}
 
 div.chart{
     font-family:sans-serif;
@@ -82,7 +75,6 @@ div.bar {
     margin-bottom:2px;
     text-align:right;
 }
-
 
 
 body {

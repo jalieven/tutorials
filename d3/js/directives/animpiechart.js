@@ -11,9 +11,11 @@ animPieChartDirective.directive('animPieChart', function(){
                 height = attrs.height,
                 margin = attrs.margin,
                 band = attrs.band,
+                ease = attrs.ease,
+                duration = attrs.duration,
                 radius = Math.min(width, height) / 2;
 
-            var color = d3.scale.category20c();
+            var color = d3.scale.ordinal().range(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#ebf6ff"]);
 
             var pie = d3.layout.pie()
                 .value(function (d) {
@@ -34,7 +36,9 @@ animPieChartDirective.directive('animPieChart', function(){
             function change(data) {
 
                 var data0 = path.data(),
-                    data1 = pie(data);
+                    data1 = pie(data),
+                    r = Math.min(width, height) / 2,
+                    labelr = r + 30;
 
                 path = path.data(data1, key);
 
@@ -60,16 +64,16 @@ animPieChartDirective.directive('animPieChart', function(){
                     .datum(function (d, i) {
                         return findNeighborArc(i, data1, data0, key) || d;
                     })
-                    .transition()
-                    .duration(750)
+                    .transition().ease(ease)
+                    .duration(duration)
                     .attrTween("d", arcTween)
                     .text(function (d) {
                         return d.data.label + ': ' + d.data.percentage + "% (amount: " + d.data.value + ")";
                     })
                     .remove();
 
-                path.transition()
-                    .duration(750)
+                path.transition().ease(ease)
+                    .duration(duration)
                     .attrTween("d", arcTween);
 
                 path.select("title").text(function (d) {
@@ -127,12 +131,11 @@ animPieChartDirective.directive('animPieChart', function(){
                 };
             }
 
-//            var data = angular.fromJson(attrs.data)
-//            change(data);
-
             attrs.$observe('data', function(value) {
-                var data = angular.fromJson(value);
-                change(data);
+                if(value.length > 0) {
+                    var data = angular.fromJson(value);
+                    change(data);
+                }
             });
 
         }

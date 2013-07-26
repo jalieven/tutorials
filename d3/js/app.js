@@ -1,86 +1,146 @@
-var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart']);
+var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart', 'map']);
 
 tutorial.controller('ChartController', function ($scope) {
-//    $scope.data = [
-//        {"label": "one", "value": 20},
-//        {"label": "two", "value": 50},
-//        {"label": "three", "value": 40},
-//        {"label": "four", "value": 20},
-//        {"label": "five", "value": 10},
-//        {"label": "six", "value": 50},
-//        {"label": "seven", "value": 30},
-//        {"label": "eight", "value": 40}
-//    ];
-//
-//    var updateChartData = function () {
-//        $scope.data = [
-//            {"label": "one", "value": Math.random() * 100},
-//            {"label": "two", "value": Math.random() * 100},
-//            {"label": "three", "value": Math.random() * 100},
-//            {"label": "four", "value": Math.random() * 100},
-//            {"label": "five", "value": Math.random() * 100},
-//            {"label": "six", "value": Math.random() * 100},
-//            {"label": "seven", "value": Math.random() * 100},
-//            {"label": "eight", "value": Math.random() * 100}
-//        ];
-//        $scope.$apply();
-//    };
-//
-//    setInterval(updateChartData, 2000);
+    // the data to work with
+    var nested_data;
 
-
-    var diffuse_lucht = [
-        {'id': 1, 'year': 2009, 'municipality': 'Haaltert', 'substance': 'NH3', 'amount': 205.23},
-        {'id': 2, 'year': 2009, 'municipality': 'Haaltert', 'substance': 'ASBESTOS', 'amount': 5.45},
-        {'id': 3, 'year': 2009, 'municipality': 'Gent', 'substance': 'NH3', 'amount': 185.2},
-        {'id': 4, 'year': 2009, 'municipality': 'Gent', 'substance': 'ASBESTOS', 'amount': 100.85},
-        {'id': 5, 'year': 2009, 'municipality': 'Aalst', 'substance': 'NH3', 'amount': 105.25},
-        {'id': 6, 'year': 2009, 'municipality': 'Aalst', 'substance': 'ASBESTOS', 'amount': 5.25},
-        {'id': 7, 'year': 2009, 'municipality': 'Antwerpen', 'substance': 'NH3', 'amount': 125.01},
-        {'id': 8, 'year': 2009, 'municipality': 'Antwerpen', 'substance': 'ASBESTOS', 'amount': 105.25},
-        {'id': 9, 'year': 2010, 'municipality': 'Haaltert', 'substance': 'NH3', 'amount': 85.23},
-        {'id': 10, 'year': 2010, 'municipality': 'Haaltert', 'substance': 'ASBESTOS', 'amount': 7.45},
-        {'id': 11, 'year': 2010, 'municipality': 'Gent', 'substance': 'NH3', 'amount': 10745.2},
-        {'id': 12, 'year': 2010, 'municipality': 'Gent', 'substance': 'ASBESTOS', 'amount': 200.85},
-        {'id': 13, 'year': 2010, 'municipality': 'Aalst', 'substance': 'NH3', 'amount': 155.27},
-        {'id': 14, 'year': 2010, 'municipality': 'Aalst', 'substance': 'ASBESTOS', 'amount': 5.77},
-        {'id': 15, 'year': 2010, 'municipality': 'Antwerpen', 'substance': 'NH3', 'amount': 4005.41},
-        {'id': 16, 'year': 2010, 'municipality': 'Antwerpen', 'substance': 'ASBESTOS', 'amount': 104.20},
-        {'id': 17, 'year': 2011, 'municipality': 'Haaltert', 'substance': 'NH3', 'amount': 125.23},
-        {'id': 18, 'year': 2011, 'municipality': 'Haaltert', 'substance': 'ASBESTOS', 'amount': 7.45},
-        {'id': 19, 'year': 2011, 'municipality': 'Gent', 'substance': 'NH3', 'amount': 45.3},
-        {'id': 20, 'year': 2011, 'municipality': 'Gent', 'substance': 'ASBESTOS', 'amount': 2.85},
-        {'id': 21, 'year': 2011, 'municipality': 'Aalst', 'substance': 'NH3', 'amount': 15.24},
-        {'id': 22, 'year': 2011, 'municipality': 'Aalst', 'substance': 'ASBESTOS', 'amount': 5.77},
-        {'id': 23, 'year': 2011, 'municipality': 'Antwerpen', 'substance': 'NH3', 'amount': 405.45},
-        {'id': 24, 'year': 2011, 'municipality': 'Antwerpen', 'substance': 'ASBESTOS', 'amount': 4.24}
-    ];
-
-    var mapped_diffuse_lucht = d3.nest()
-        .key(function (d) {
-            return d.year;
-        }).sortKeys(d3.ascending)
-        .key(function (d) {
-            return d.substance;
-        }).sortKeys(d3.ascending)
-        .map(diffuse_lucht, d3.map);
-
-    var nh3_2009 = mapped_diffuse_lucht.get(2009).get('NH3');
-
+    // prepare method for insertion into animated pie
     function addPercentages(d3Map) {
         var total = 0;
         d3Map.forEach(function (d) {
-            total += d.amount;
+            total += d.a;
         });
 
         d3Map.forEach(function (d) {
-            d.percentage = ((d.amount / total) * 100).toFixed(2);
-            d.label = d.municipality;
-            d.value = d.amount;
+            d.percentage = ((d.a / total) * 100).toFixed(2);
+            d.label = d.s;
+            d.value = d.a;
         });
         return d3Map;
     }
 
-    nh3_2009 = addPercentages(nh3_2009);
-    $scope.data = nh3_2009;
+    // loading the data from server and initial selection
+    d3.json("data/air_data.json", function (json) {
+        nested_data = d3.nest()
+            .key(function (d) {
+                return d.y;
+            }).sortKeys(d3.ascending)
+            .key(function (d) {
+                return d.m;
+            }).sortKeys(d3.ascending)
+            .key(function (d) {
+                return d.sub;
+            }).sortKeys(d3.ascending)
+            .map(json.data, d3.map);
+
+        var selected_data = nested_data.get(2009).get("HAALTERT").get("CO2");
+        $scope.data = addPercentages(selected_data);
+        $scope.$apply();
+
+        // this stuff is for the yearChart
+
+        var bar_data = d3.nest()
+            .key(function (d) {
+                return d.m;
+            }).sortKeys(d3.ascending)
+            .key(function (d) {
+                return d.sub;
+            }).sortKeys(d3.ascending)
+            .map(json.data, d3.map);
+
+        var selected_bar_data = bar_data.get("HAALTERT").get("CO2");
+
+        var bar_per_year = d3.nest()
+            .key(function (d) {
+                return d.y;
+            }).sortKeys(d3.ascending)
+            .rollup(function(d) {
+                return {
+                    y: d3.mean(d,function(g) {return +g.y}),
+                    value:d3.sum(d,function(g) {return +g.a})
+                };
+            })
+            .map(selected_bar_data, d3.map);
+
+        var color = d3.scale.ordinal().range(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#ebf6ff"]);
+
+        var w = 50,
+            h = 300;
+
+        var x = d3.scale.linear()
+            .domain([0, 1])
+            .range([0, w]);
+
+        var y = d3.scale.linear()
+            .domain([0, d3.max(bar_per_year.values() ,function(g) {return g.value})])
+            .rangeRound([0, h]);
+
+        var chart = d3.select("#yearChartContainer").append("svg")
+            .attr("class", "chart")
+            .attr("width", w * bar_per_year.keys().length - 1)
+            .attr("height", h);
+
+        chart.selectAll("rect")
+            .data(bar_per_year.values())
+            .enter().append("rect")
+            .attr("x", function(d, i) { return x(i) - .5; })
+            .attr("y", function(d) { return h - y(d.value) - .5; })
+            .attr("width", w)
+            .attr("height", function(d) { return y(d.value); })
+            .attr("fill", function(d, i) { return color(i); });
+
+    });
+
+    // gis component for selecting the municipality
+    var width = 960,
+        height = 500;
+
+    var xym = d3.geo.albers()
+        .center([0, 55.4])
+        .rotate([-4.2, 4.3])
+        .parallels([55, 65])
+        .scale(25000);
+
+    var path = d3.geo.path().projection(xym);
+
+    var svg = d3.select("#gis")
+        .append("svg").attr("id","svgoriginal").attr("width", width)
+        .attr("height", height);
+
+    var gemeentes = svg.append("g")
+        .attr("id", "gemeentes");
+
+    d3.json("map/vlaamse_hoofdgemeenten_topo.json", function (json) {
+        gemeentes.selectAll("path")
+            .data(topojson.feature(json, json.objects.vlaamse_hoofdgemeenten).features)
+            .enter().append("path")
+            .attr("fill", "#ddd")
+            .attr("id", function(d) {
+                return d.id;
+            }).on('mouseover', function() {
+                d3.select("#pointerSelection").text(ucwords(this.id.toLowerCase().replace(/_/g, '-')));
+                d3.select(this).attr("fill", "#3182bd");
+            })
+            .on('mouseout', function() {
+                d3.select(this).attr("fill", "#ddd");
+            })
+            .on('click', function() {
+                d3.selectAll(".gisSelection").text(ucwords(this.id.toLowerCase().replace(/_/g, '-')));
+                var selected_data = nested_data.get(2009).get(this.id).get("CO2");
+                $scope.data = addPercentages(selected_data);
+                $scope.$apply();
+            })
+            .attr("d", path);
+    });
+
+    function ucwords(input) {
+        var words = input.split(/(\s|-)+/),
+            output = [];
+        for (var i = 0, len = words.length; i < len; i += 1) {
+            output.push(words[i][0].toUpperCase() +
+                words[i].toLowerCase().substr(1));
+        }
+        return output.join('');
+    }
+
 });
