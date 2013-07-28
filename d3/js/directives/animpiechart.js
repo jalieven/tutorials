@@ -36,9 +36,7 @@ animPieChartDirective.directive('animPieChart', function(){
             function change(data) {
 
                 var data0 = path.data(),
-                    data1 = pie(data),
-                    r = Math.min(width, height) / 2,
-                    labelr = r + 30;
+                    data1 = pie(data);
 
                 path = path.data(data1, key);
 
@@ -55,11 +53,6 @@ animPieChartDirective.directive('animPieChart', function(){
                         return d.data.label + ': ' + d.data.percentage + "% (amount: " + d.data.value + ")";
                     });
 
-                function angle(d) {
-                    var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
-                    return a > 90 ? a - 180 : a;
-                }
-
                 path.exit()
                     .datum(function (d, i) {
                         return findNeighborArc(i, data1, data0, key) || d;
@@ -67,14 +60,17 @@ animPieChartDirective.directive('animPieChart', function(){
                     .transition().ease(ease)
                     .duration(duration)
                     .attrTween("d", arcTween)
-                    .text(function (d) {
-                        return d.data.label + ': ' + d.data.percentage + "% (amount: " + d.data.value + ")";
-                    })
                     .remove();
 
                 path.transition().ease(ease)
                     .duration(duration)
-                    .attrTween("d", arcTween);
+                    .attrTween("d", function arcTween(d) {
+                        var i = d3.interpolate(this._current, d);
+                        this._current = i(0);
+                        return function (t) {
+                            return arc(i(t));
+                        };
+                    });
 
                 path.select("title").text(function (d) {
                     return d.data.label + ': ' + d.data.percentage + "% (amount: " + d.data.value + ")";
