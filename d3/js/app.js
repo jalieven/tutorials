@@ -100,7 +100,7 @@ tutorial.controller('ChartController', function ($scope) {
             .data($scope.yearBarData)
             .enter()
             .append("text")
-            .attr("class", "label")
+            .attr("class", "chart_label")
             .text(function(d) {
                 return d.y;
             }).attr("x", function(d, i) {
@@ -109,7 +109,7 @@ tutorial.controller('ChartController', function ($scope) {
             .attr("y", function(d) {
                 return h - y(d.value) + 17;
             }).attr("font-size", "30px")
-            .attr("fill", "white");
+            .attr("fill", "#ddd");
 
         $scope.$watch('[yearBarData]', function () {
             chart.selectAll("rect")
@@ -123,7 +123,7 @@ tutorial.controller('ChartController', function ($scope) {
                     return y(d.value);
                 });
 
-            chart.selectAll(".label")
+            chart.selectAll(".chart_label")
                 .data($scope.yearBarData)
                 .transition().ease('elastic')
                 .duration(900)

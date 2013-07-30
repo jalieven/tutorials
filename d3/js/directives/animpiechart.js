@@ -15,7 +15,7 @@ animPieChartDirective.directive('animPieChart', function(){
                 duration = attrs.duration,
                 radius = Math.min(width, height) / 2;
 
-            var color = d3.scale.ordinal().range(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#ebf6ff"]);
+            var color = d3.scale.ordinal().range(["#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#dcedff"]);
 
             var pie = d3.layout.pie()
                 .value(function (d) {
@@ -48,10 +48,10 @@ animPieChartDirective.directive('animPieChart', function(){
                 valueLabels = label_group.selectAll("text").data(data1);
 
                 valueLabels.enter().append("svg:text")
-                    .attr("class", "label")
+                    .attr("class", "chart_label")
                     .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
                     .attr("text-anchor", "middle")
-                    .attr("fill", "white")
+                    .attr("fill", "#ddd")
                     .text(function(d) {
                         return d.data.label;
                     });
@@ -60,9 +60,8 @@ animPieChartDirective.directive('animPieChart', function(){
 
                 valueLabels.transition().ease(ease).duration(duration)
                     .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
-                    .style("fill-opacity", function(d) {return d.value==0 ? 1e-6 : 1;})
                     .text(function(d) {
-                        return d.data.label;
+                        return d.value==0 ? '' : d.data.label;
                     });
 
                 path.enter()

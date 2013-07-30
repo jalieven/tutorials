@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--<html lang="en">-->
 <html lang="en" data-ng-app="tutorial">
 <head>
 
@@ -15,10 +14,8 @@
 <body>
 
 <form></form>
-
     <!-- This is the content div -->
     <div class="container">
-
         <!--<input data-ng-model="meter" type="number" max="100" min="0">-->
 
         <!--<arc-tween meter="{{meter}}" outer-radius="100" inner-radius="80"-->
@@ -40,7 +37,7 @@
         <!--</form>-->
 
         <h2>Luchtverontreiniging in Vlaanderen</h2>
-        <h5>U selecteerde <span id="pointerSelection" class="capitalize">vlaanderen</span></h5>
+        <h5>Selectie <span id="pointerSelection" class="capitalize">vlaanderen</span></h5>
         <!--<map width="960" height="500" scale="25000" topojson="map/vlaamse_hoofdgemeenten_topo.json"></map>-->
         <div id="gis"></div>
 
@@ -55,7 +52,7 @@
             </div>
             <div class="row">
                 <div class="span6">
-                    <anim-pie-chart width="370" height="370" margin="5" band="100"
+                    <anim-pie-chart width="370" height="370" margin="5" band="110"
                                     data="{{data}}" ease="elastic" duration="900"></anim-pie-chart>
                 </div>
                 <div class="span6">

@@ -28,7 +28,7 @@ svg {
 }
 
 .birthyear {
-    fill: #fff;
+    fill: #c6dbef;
 }
 
 
@@ -98,3 +98,7 @@ input {
     margin: 0 7px;
 }
 
+.chart_label {
+    text-shadow: 1px 1px 0 black;
+    font-weight: bold;
+}
