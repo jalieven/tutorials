@@ -20,18 +20,23 @@ animPieChartDirective.directive('animPieChart', function(){
             var pie = d3.layout.pie()
                 .value(function (d) {
                     return d.value;
-                })
-                .sort(null);
+                }).sort(null);
 
             var arc = d3.svg.arc().outerRadius(radius - margin).innerRadius(radius - margin - band);
 
             var svg = d3.select(".animPieChart").append("svg")
                 .attr("width", width)
-                .attr("height", height)
-                .append("g")
+                .attr("height", height);
+
+            var chart_group = svg.append("g")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-            var path = svg.selectAll("path");
+            var label_group = svg.append("g")
+                .attr("class", "label_group")
+                .attr("transform", "translate(" + (width/2) + "," + (height/2) + ")");
+
+            var path = chart_group.selectAll("path");
+            var valueLabels;
 
             function change(data) {
 
@@ -39,6 +44,26 @@ animPieChartDirective.directive('animPieChart', function(){
                     data1 = pie(data);
 
                 path = path.data(data1, key);
+
+                valueLabels = label_group.selectAll("text").data(data1);
+
+                valueLabels.enter().append("svg:text")
+                    .attr("class", "label")
+                    .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
+                    .attr("text-anchor", "middle")
+                    .attr("fill", "white")
+                    .text(function(d) {
+                        return d.data.label;
+                    });
+
+                valueLabels.exit().remove();
+
+                valueLabels.transition().ease(ease).duration(duration)
+                    .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
+                    .style("fill-opacity", function(d) {return d.value==0 ? 1e-6 : 1;})
+                    .text(function(d) {
+                        return d.data.label;
+                    });
 
                 path.enter()
                     .append("path")
@@ -83,11 +108,6 @@ animPieChartDirective.directive('animPieChart', function(){
 
             function key(d) {
                 return d.data.label;
-            }
-
-            function type(d) {
-                d.value = +d.value;
-                return d;
             }
 
             function findNeighborArc(i, data0, data1, key) {

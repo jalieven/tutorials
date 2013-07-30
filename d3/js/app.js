@@ -111,7 +111,6 @@ tutorial.controller('ChartController', function ($scope) {
             }).attr("font-size", "30px")
             .attr("fill", "white");
 
-
         $scope.$watch('[yearBarData]', function () {
             chart.selectAll("rect")
                 .data($scope.yearBarData)
