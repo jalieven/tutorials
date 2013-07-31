@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5004337-fa89-43ff-ab2c-93926a9ca245" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/directives/animbarchart.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/d3.iml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
@@ -12,15 +9,12 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/directives/animpiechart.js" afterPath="$PROJECT_DIR$/js/directives/animpiechart.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/app.js" afterPath="$PROJECT_DIR$/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="d3.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/app.js" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375256664202" ignored="false" />
     <file path="/animpiechart.js" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375255331132" ignored="false" />
-    <file path="/Dummy.txt" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375257563652" ignored="false" />
+    <file path="/Dummy.txt" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375258088771" ignored="false" />
     <file path="/animbarchart.js" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375257491564" ignored="false" />
     <file path="/index.html" changelist="e5004337-fa89-43ff-ab2c-93926a9ca245" time="1375256787940" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -197,12 +191,18 @@
       <created>1374998688372</created>
       <updated>1374998688372</updated>
     </task>
+    <task id="LOCAL-00001" summary="extract animated barchart angularjs style + gitignore">
+      <created>1375258092279</created>
+      <updated>1375258092279</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-4" width="1857" height="1205" extended-state="6" />
     <editor active="false" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32923368" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -263,7 +263,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="extract animated barchart angularjs style + gitignore" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -277,6 +277,7 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+    <MESSAGE value="extract animated barchart angularjs style + gitignore" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
