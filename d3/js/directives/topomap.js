@@ -1,12 +1,12 @@
-var mapDirective = angular.module('map', []);
+var topoMapDirective = angular.module('topoMap', []);
 
 // TODO plug it in!
 
-mapDirective.directive('map', function(){
+topoMapDirective.directive('topoMap', function(){
     return {
         restrict: 'E',
         replace: true,
-        template: '<div class="map"></div>',
+        template: '<div class="topoMap"></div>',
         link: function(scope, element, attrs) {
 
             var width = attrs.width,
@@ -24,15 +24,15 @@ mapDirective.directive('map', function(){
 
             var path = d3.geo.path().projection(xym);
 
-            var svg = d3.select("#gis")
+            var svg = d3.select(".topoMap")
                 .append("svg").attr("id","svgoriginal").attr("width", width)
                 .attr("height", height);
 
-            var gemeentes = svg.append("g")
-                .attr("id", "gemeentes");
+            var path_group = svg.append("g")
+                .attr("id", "path_group");
 
             d3.json(topojson, function (json) {
-                gemeentes.selectAll("path")
+                path_group.selectAll("path")
                     .data(topojson.feature(json, json.objects.vlaamse_hoofdgemeenten).features)
                     .enter().append("path")
                     .attr("fill", color1)
@@ -53,16 +53,6 @@ mapDirective.directive('map', function(){
                     })
                     .attr("d", path);
             });
-
-            function ucwords(input) {
-                var words = input.split(/(\s|-)+/),
-                    output = [];
-                for (var i = 0, len = words.length; i < len; i += 1) {
-                    output.push(words[i][0].toUpperCase() +
-                        words[i].toLowerCase().substr(1));
-                }
-                return output.join('');
-            }
 
         }
     }

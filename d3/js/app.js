@@ -1,11 +1,11 @@
-var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart', 'animBarChart', 'map']);
+var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart', 'animBarChart', 'municipalityMap']);
 
 tutorial.controller('ChartController', function ($scope) {
     // the data to work with
     var pie_data;
     var bar_data;
 
-    // prepare method for insertion into animated pie
+    // prepare method for insertion into animPieChart
     function addPercentages(d3Map) {
         var total = 0;
         d3Map.forEach(function (d) {
@@ -20,8 +20,9 @@ tutorial.controller('ChartController', function ($scope) {
         return d3Map;
     }
 
-    // loading the data from server and initial selection
+    // loading the data from server and transform json-data
     d3.json("data/air_data.json", function (json) {
+        // this stuff is for the sourcePieChart
         pie_data = d3.nest()
             .key(function (d) {
                 return d.y;
@@ -34,8 +35,8 @@ tutorial.controller('ChartController', function ($scope) {
             }).sortKeys(d3.ascending)
             .map(json.data, d3.map);
 
-        var selected_data = pie_data.get(2009).get("HAALTERT").get("CO2");
-        $scope.sourcePieData = addPercentages(selected_data);
+        var selected_pie_data = pie_data.get(2009).get("HAALTERT").get("CO2");
+        $scope.sourcePieData = addPercentages(selected_pie_data);
 
         // this stuff is for the yearBarChart
         bar_data = d3.nest()
@@ -63,6 +64,7 @@ tutorial.controller('ChartController', function ($scope) {
 
         $scope.yearBarData = bar_per_year.values();
 
+        // apply the scope changes
         $scope.$apply();
     });
 
