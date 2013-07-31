@@ -53,10 +53,11 @@
             <div class="row">
                 <div class="span6">
                     <anim-pie-chart width="370" height="370" margin="5" band="110"
-                                    data="{{data}}" ease="elastic" duration="900"></anim-pie-chart>
+                                    data="{{sourcePieData}}" ease="elastic" duration="900"></anim-pie-chart>
                 </div>
                 <div class="span6">
-                    <div id="yearChartContainer"></div>
+                    <anim-bar-chart width="500" height="300"
+                                   data="{{yearBarData}}" ease="elastic" duration="900"></anim-bar-chart>
                 </div>
             </div>
 
@@ -80,6 +81,7 @@
     <script src="js/directives/arctween.js"></script>
     <script src="js/directives/piechart.js"></script>
     <script src="js/directives/animpiechart.js"></script>
+    <script src="js/directives/animbarchart.js"></script>
     <script src="js/directives/map.js"></script>
 
 </body>

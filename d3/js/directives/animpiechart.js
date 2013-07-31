@@ -29,6 +29,7 @@ animPieChartDirective.directive('animPieChart', function(){
                 .attr("height", height);
 
             var chart_group = svg.append("g")
+                .attr("class", "chart_group")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
             var label_group = svg.append("g")
@@ -36,7 +37,7 @@ animPieChartDirective.directive('animPieChart', function(){
                 .attr("transform", "translate(" + (width/2) + "," + (height/2) + ")");
 
             var path = chart_group.selectAll("path");
-            var valueLabels;
+            var slice_labels = label_group.selectAll("text");
 
             function change(data) {
 
@@ -45,10 +46,10 @@ animPieChartDirective.directive('animPieChart', function(){
 
                 path = path.data(data1, key);
 
-                valueLabels = label_group.selectAll("text").data(data1);
+                slice_labels = slice_labels.data(data1, key);
 
-                valueLabels.enter().append("svg:text")
-                    .attr("class", "chart_label")
+                slice_labels.enter().append("svg:text")
+                    .attr("class", "slice_label")
                     .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
                     .attr("text-anchor", "middle")
                     .attr("fill", "#ddd")
@@ -56,9 +57,9 @@ animPieChartDirective.directive('animPieChart', function(){
                         return d.data.label;
                     });
 
-                valueLabels.exit().remove();
+                slice_labels.exit().remove();
 
-                valueLabels.transition().ease(ease).duration(duration)
+                slice_labels.transition().ease(ease).duration(duration)
                     .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
                     .text(function(d) {
                         return d.value==0 ? '' : d.data.label;
