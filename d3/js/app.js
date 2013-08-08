@@ -1,4 +1,4 @@
-var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart', 'animBarChart', 'municipalityMap']);
+var tutorial = angular.module('tutorial', ['arcTween', 'pieChart', 'animPieChart', 'animBarChart', 'topoMap']);
 
 tutorial.controller('ChartController', function ($scope) {
     // the data to work with
@@ -68,67 +68,45 @@ tutorial.controller('ChartController', function ($scope) {
         $scope.$apply();
     });
 
-    // gis component for selecting the municipality
-    var width = 960,
-        height = 500;
-
-    var xym = d3.geo.albers()
-        .center([0, 55.4])
-        .rotate([-4.2, 4.3])
-        .parallels([55, 65])
-        .scale(25000);
-
-    var path = d3.geo.path().projection(xym);
-
-    var svg = d3.select("#gis")
-        .append("svg").attr("id","svgoriginal").attr("width", width)
-        .attr("height", height);
-
-    var gemeentes = svg.append("g")
-        .attr("id", "gemeentes");
-
     d3.json("map/vlaamse_hoofdgemeenten_topo.json", function (json) {
-        gemeentes.selectAll("path")
-            .data(topojson.feature(json, json.objects.vlaamse_hoofdgemeenten).features)
-            .enter().append("path")
-            .attr("fill", "#ddd")
-            .attr("id", function(d) {
-                return d.id;
-            }).on('mouseover', function() {
-                d3.select("#pointerSelection").text(ucwords(this.id.toLowerCase().replace(/_/g, '-')));
-                d3.select(this).attr("fill", "#3182bd");
-            })
-            .on('mouseout', function() {
-                d3.select(this).attr("fill", "#ddd");
-            })
-            .on('click', function() {
-                // set the titles
-                d3.selectAll(".gisSelection").text(ucwords(this.id.toLowerCase().replace(/_/g, '-')));
-                // change the pieChartData
-                var selected_data = pie_data.get(2009).get(this.id).get("CO2");
-                $scope.sourcePieData = addPercentages(selected_data);
-                // change the barChartData
-                var selected_bar_data = bar_data.get(this.id).get("CO2");
-                $scope.yearBarData = d3.nest()
-                    .key(function (d) {
-                        return d.y;
-                    }).sortKeys(d3.ascending)
-                    .rollup(function (d) {
-                        return {
-                            y: d3.mean(d, function (g) {
-                                return +g.y
-                            }),
-                            value: d3.sum(d, function (g) {
-                                return +g.a
-                            })
-                        };
-                    })
-                    .map(selected_bar_data, d3.map).values();
+        $scope.topology = json;
+        $scope.objects = json.objects.vlaamse_hoofdgemeenten;
+        $scope.center = [0, 55.4];
+        $scope.rotate = [-4.2, 4.3];
+        $scope.mouseOverMap = function(element) {
+            d3.select("#pointerSelection").text(ucwords(element.id.toLowerCase().replace(/_/g, '-')));
+            d3.select(element).attr("fill", "#3182bd");
+        };
+        $scope.mouseOutMap = function(element) {
+            d3.select(element).attr("fill", "#ddd");
+        };
+        $scope.clickMap = function(element) {
+            d3.selectAll(".gisSelection").text(ucwords(element.id.toLowerCase().replace(/_/g, '-')));
+            // change the pieChartData
+            var selected_data = pie_data.get(2009).get(element.id).get("CO2");
+            $scope.sourcePieData = addPercentages(selected_data);
+            // change the barChartData
+            var selected_bar_data = bar_data.get(element.id).get("CO2");
+            $scope.yearBarData = d3.nest()
+                .key(function (d) {
+                    return d.y;
+                }).sortKeys(d3.ascending)
+                .rollup(function (d) {
+                    return {
+                        y: d3.mean(d, function (g) {
+                            return +g.y
+                        }),
+                        value: d3.sum(d, function (g) {
+                            return +g.a
+                        })
+                    };
+                })
+                .map(selected_bar_data, d3.map).values();
 
-                // apply our data changes
-                $scope.$apply();
-            })
-            .attr("d", path);
+            // apply our data changes
+            $scope.$apply();
+        };
+        $scope.$apply();
     });
 
     function ucwords(input) {

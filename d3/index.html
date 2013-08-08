@@ -38,8 +38,9 @@
 
         <h2>Luchtverontreiniging in Vlaanderen</h2>
         <h5>Selectie <span id="pointerSelection" class="capitalize">vlaanderen</span></h5>
-        <!--<topo-map width="960" height="500" scale="25000" topojson="map/vlaamse_hoofdgemeenten_topo.json"></topo-map>-->
-        <div id="gis"></div>
+        <topo-map width="960" height="500" scale="25000" color="#ddd" topology="{{topology}}" objects="{{objects}}"
+                center="{{center}}" rotate="{{rotate}}" parallels="[55, 65]"></topo-map>
+        <!--<div id="gis"></div>-->
 
         <div data-ng-controller="ChartController">
             <div class="row">
@@ -69,7 +70,7 @@
     <script src="js/vendor/bootstrap.min.js"></script>
     <script src="js/vendor/angular.min.js"></script>
     <script src="js/vendor/d3.v3.js"></script>
-    <script src="js/vendor/topojson.v1.min.js"></script>
+    <script src="js/vendor/topojson.v1.js"></script>
 
     <!-- the apps JavaScript files -->
     <!--<script src="js/d3-sandbox/arctween.js"></script>-->
